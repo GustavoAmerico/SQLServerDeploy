@@ -1,0 +1,80 @@
+﻿{
+  "manifestVersion": 1,
+  "id": "SQLServerDeploy",
+  "name": "SQLServerDeploy",
+  "version": "0.2.0",
+  "publisher": "gustavoamerico",
+  "public": false,
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "Task for deployment dacpac file.",
+  "categories": [
+    "Build and release"
+  ],
+  "icons": {
+    "default": "images/icon15x16.png",
+    "other": "images/icon32x32.png"
+  },
+  "scopes": [
+    "vso.build_execute"
+  ],
+  "files": [
+    {
+      "path": "images",
+      "addressable": true
+    },
+    {
+      "path": "scripts",
+      "addressable": true
+    },
+    {
+      "path": "node_modules/vss-web-extension-sdk/lib/vss.sdk.min.js",
+      "addressable": true
+    }
+  ],
+  "screenshots": [],
+  "tags": [
+    "msdeploy",
+    "webdeploy",
+    "sqldeploy",
+    "sqlserver"
+  ],
+  "content": {
+    "details": {
+      "path": "readme.md"
+    }
+  },
+  "links": {
+    "learn": {
+      "uri": "http:gustavoamerico.net"
+    },
+    "github": {
+      "uri": "https:github.com/GustavoAmerico"
+    },
+    "support": {
+      "uri": "mailto:contato@gustavoamerico.net"
+    }
+  },
+  "branding": {
+    "theme": "light"
+  },
+  "contributions": [
+    {
+      "id": "gustavoamerico",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "scripts"
+      }
+    }
+  ]
+}

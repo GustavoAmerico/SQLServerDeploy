@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "SQLServerDeploy",
   "name": "SQLServerDeploy",
-  "version": "0.2.0",
+  "version": "0.2.7",
   "publisher": "gustavoamerico",
   "public": false,
   "runsOn": [
@@ -19,7 +19,7 @@
     "Build and release"
   ],
   "icons": {
-    "default": "images/icon15x16.png",
+    "default": "images/icon32x32.png",
     "other": "images/icon32x32.png"
   },
   "scopes": [
@@ -29,6 +29,10 @@
     {
       "path": "images",
       "addressable": true
+    },
+    {
+      "path": "images/icon32x32.png"
+     
     },
     {
       "path": "scripts",

@@ -26,9 +26,12 @@ param(
     $allowIncompatiblePlatform = "true",
 
     [Int32][Parameter(Mandatory = $true)]
-    $commandTimeout = 7200
+    $commandTimeout = 7200,
+
+    [String] [Parameter(Mandatory = $False)]
+    $createNewDatabase ="false"
 )
- add-type -path "C:\Program Files (x86)\Microsoft SQL Server\110\DAC\bin\Microsoft.SqlServer.Dac.dll"
+ add-type -path "C:\Program Files (x86)\Microsoft SQL Server\120\DAC\bin\Microsoft.SqlServer.Dac.dll"
 if (![System.IO.Directory]::Exists($dacpacPath)) {
     Write-Host "Não foi encontrado um diretorio:" $dacpacPath;
     return;
@@ -62,18 +65,15 @@ $dacService = new-object Microsoft.SqlServer.Dac.DacServices($connectionString);
 Write-Host "Conseguiu se conectar ao servidor" 
 
 Write-Host "Preparando as variaveis de publicação"
-Write-Host "BlockOnPossibleDataLoss: " $blockOnPossibleDataLoss
-Write-Host "CompareUsingTargetCollation: " $compareUsingTargetCollation
-Write-Host "AllowIncompatiblePlatform: " $allowIncompatiblePlatform
-Write-Host "VerifyDeployment: " $verifyDeployment
-
 $option = new-object Microsoft.SqlServer.Dac.DacDeployOptions 
-
+$option.CommandTimeout = 7200; 
 $option.BlockOnPossibleDataLoss = [System.Convert]::ToBoolean($blockOnPossibleDataLoss.Trim());
 $option.CompareUsingTargetCollation = [System.Convert]::ToBoolean( $compareUsingTargetCollation.Trim());
 $option.AllowIncompatiblePlatform = [System.Convert]::ToBoolean( $allowIncompatiblePlatform.Trim());
 $option.VerifyDeployment = [System.Convert]::ToBoolean($verifyDeployment.Trim());
+$option.CreateNewDatabase =  [System.Convert]::ToBoolean($createNewDatabase.Trim());
 $option.CommandTimeout = [System.Convert]::ToInt32($commandTimeout);
+Write-Host $option;
 
 $dacService.Deploy($dp, $dbName, "True", $option)
 Write-Host "Concluiu o deploy"

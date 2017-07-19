@@ -2,9 +2,9 @@
   "manifestVersion": 1,
   "id": "SQLServerDeploy",
   "name": "SQLServerDeploy",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "publisher": "gustavoamerico",
-  "public": false,
+  "public": true,
   "runsOn": [
     "Agent",
     "DeploymentGroup"

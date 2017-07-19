@@ -13,7 +13,7 @@
   "version": {
     "Major": 1,
     "Minor": 1,
-    "Patch": 4
+    "Patch": 5
   },
   "demands": [
     "SqlPackage"
@@ -90,10 +90,18 @@
     {
       "name": "allowIncompatiblePlatform",
       "type": "boolean",
-      "label": "Allow in compatible platform",
+      "label": "Allow incompatible platform",
       "defaultValue": "true",
       "required": false,
       "helpMarkDown": " specifies whether deployment will block due to platform compatibility."
+    },
+    {
+      "name": "createNewDatabase",
+      "type": "boolean",
+      "label": "Drop and create database",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specifies whether the existing database will be dropped and a new database created before proceeding with the actual deployment actions. Acquires single-user mode before dropping the existing database.(Not Recomend for production)"
     }
   ],
   "execution": {

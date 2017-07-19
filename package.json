@@ -1,0 +1,20 @@
+{
+  "name": "slqserver_deploy",
+  "version": "1.0.0",
+  "directories": {
+    "man": "SQLServerDeploy"
+  },
+  
+  "author": {
+    "name": "Gustavo Américo Gonçalves",
+    "email": "contato@gustavoamerico.net",
+    "url": "http://gustavoamerico.net"
+  },
+  "scripts": {
+    "publish": "tfx extension create --manifest-globs vss-extension.json --rev-version"
+  },
+
+  "devDependencies": {
+    "tfx-cli": "^0.4.9"
+  }
+}

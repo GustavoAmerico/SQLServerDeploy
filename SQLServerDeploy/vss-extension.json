@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "SQLServerDeploy",
   "name": "SQLServerDeploy",
-  "version": "0.3.2",
+  "version": "0.3.6",
   "publisher": "gustavoamerico",
   "public": true,
   "runsOn": [
@@ -19,8 +19,8 @@
     "Build and release"
   ],
   "icons": {
-    "default": "images/icon32x32.png",
-    "other": "images/icon32x32.png"
+    "default": "images/icon.png",
+    "large": "images/icon.png"
   },
   "scopes": [
     "vso.build_execute"
@@ -31,8 +31,10 @@
       "addressable": true
     },
     {
-      "path": "images/icon32x32.png"
-     
+      "path": "images/icon.png"
+    },
+    {
+      "path": "images/icon15x16.png"
     },
     {
       "path": "scripts",
@@ -57,10 +59,10 @@
   },
   "links": {
     "learn": {
-      "uri": "http:gustavoamerico.net"
+      "uri": "http://gustavoamerico.net"
     },
     "github": {
-      "uri": "https:github.com/GustavoAmerico"
+      "uri": "https://github.com/GustavoAmerico/SQLServerDeploy/"
     },
     "support": {
       "uri": "mailto:contato@gustavoamerico.net"
@@ -80,5 +82,9 @@
         "name": "scripts"
       }
     }
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/GustavoAmerico/SQLServerDeploy"
+  }
 }

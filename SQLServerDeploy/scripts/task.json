@@ -1,4 +1,5 @@
 ﻿{
+  "$schema": "https://raw.githubusercontent.com/AArnott/vso-agent-tasks/9b41d803a/tasks.schema.json",
   "id": "1561E90D-14CC-47DE-812F-33F62B04BE0B",
   "name": "SQLServerDeploy",
   "instanceNameFormat": "Deploy $(dbName)",
@@ -12,8 +13,8 @@
   ],
   "version": {
     "Major": 1,
-    "Minor": 1,
-    "Patch": 5
+    "Minor": 2,
+    "Patch": 0
   },
   "demands": [
     "SqlPackage"

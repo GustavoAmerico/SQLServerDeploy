@@ -44,7 +44,7 @@
       "label": "SQL ConnectionString",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": ""
+      "helpMarkDown": "Server=tcp:{[database_domain_name or IP], [port]};Initial Catalog={databaseName};Persist Security Info=False;User ID={your_username};Password={your_password};MultipleActiveResultSets=True;Encrypt=True;"
     },
     {
       "name": "dbName",

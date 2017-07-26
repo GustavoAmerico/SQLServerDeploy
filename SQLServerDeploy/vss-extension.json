@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "SQLServerDeploy",
   "name": "SQLServerDeploy",
-  "version": "0.3.6",
+  "version": "0.3.8",
   "publisher": "gustavoamerico",
   "public": true,
   "runsOn": [
@@ -45,7 +45,9 @@
       "addressable": true
     }
   ],
-  "screenshots": [],
+  "screenshots": [
+    "images/screenshot_1.png"
+  ],
   "tags": [
     "msdeploy",
     "webdeploy",

@@ -10,7 +10,7 @@
     "tfx-cli": "^0.4.9"
   },
   "dependencies": {
-    "vss-web-extension-sdk": "2.117.0"
+    "vss-web-extension-sdk": "^2.117.0"
   },
   "repository": {
     "type": "git",

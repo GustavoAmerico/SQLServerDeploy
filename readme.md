@@ -1,4 +1,7 @@
-﻿[PT-BR](SQLServerDeploy\readme-pt-br.md)
+![Badge](https://gag.visualstudio.com/_apis/public/build/definitions/0c226715-4818-459d-82a5-1a71854c789e/13/badge)
+
+
+[PT-BR](SQLServerDeploy\readme-pt-br.md)
 # **What is?**
 
 The SQLServer Deploy is a set of scripts that are able to perform the publication of the structure of your database (MS SQL Server) based on the selected .dacpac file.

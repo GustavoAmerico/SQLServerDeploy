@@ -1,20 +1,16 @@
 {
   "name": "slqserver_deploy",
   "version": "1.0.0",
-  "directories": {
-    "man": "SQLServerDeploy"
-  },
   "author": "Gustavo Américo Gonçalves <contato@gustavoamerico.net> (http://gustavoamerico.net)",
+  "description": "The task need from sql server and SDDT instaled in agent",
   "scripts": {
     "publish": "tfx extension create --manifest-globs vss-extension.json --rev-version"
   },
   "devDependencies": {
     "tfx-cli": "^0.4.9"
   },
-  "description": "The task need from sql server and SDDT instaled in agent",
-  "main": "index.js",
   "dependencies": {
-    "tfx-cli": "^0.4.9"
+    "vss-web-extension-sdk": "2.117.0"
   },
   "repository": {
     "type": "git",
@@ -28,9 +24,7 @@
     "publish",
     "sqlserver"
   ],
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/GustavoAmerico/SQLServerDeploy/issues"
-  },
-  "homepage": "https://github.com/GustavoAmerico/SQLServerDeploy#readme"
+  }
 }

@@ -33,24 +33,24 @@ param(
 )
  add-type -path "C:\Program Files (x86)\Microsoft SQL Server\120\DAC\bin\Microsoft.SqlServer.Dac.dll"
 if (![System.IO.Directory]::Exists($dacpacPath)) {
-    Write-Host "Não foi encontrado um diretorio:" $dacpacPath;
+    Write-Host "No directory found:" $dacpacPath;
     return;
 }
 
 $fileName = ($dacpacPath + "\" + $dacpacPattern).Trim(); 
-Write-Host "Tentando encontrar o arquivo:" $fileName
+Write-Host "Searching for:" $fileName
 try {
  
     $file = Get-ChildItem $fileName -Recurse  
     if ($file.Length -eq 0) {
-        Throw "Não foi encontrado nenhum arquivo"
+        Throw "No files found"
     }
     else {
-        Write-Host "Arquivo encontrado: " $file
+        Write-Host "Found file: " $file
     }
 }
 catch {
-    Write-Host "Ocorreu um erro ao carregar os arquivos";
+    Write-Host "There was an error loading the file";
     Throw;
 }
  
@@ -58,13 +58,13 @@ catch {
 #Load Microsoft.SqlServer.Dac assembly
 [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.Dac")
 
-Write-Host "Iniciando o deploy"
+Write-Host "Start deploy"
 $dp = [Microsoft.SqlServer.Dac.DacPackage]::Load($file);
-Write-Host "Conseguiu carregar o dacpac"
+Write-Host "Uploaded file"
 $dacService = new-object Microsoft.SqlServer.Dac.DacServices($connectionString);
-Write-Host "Conseguiu se conectar ao servidor" 
+Write-Host "Connected to server" 
 
-Write-Host "Preparando as variaveis de publicação"
+Write-Host "Preparing Publishing Variables"
 $option = new-object Microsoft.SqlServer.Dac.DacDeployOptions 
 $option.CommandTimeout = 7200; 
 $option.BlockOnPossibleDataLoss = [System.Convert]::ToBoolean($blockOnPossibleDataLoss.Trim());
@@ -73,11 +73,16 @@ $option.AllowIncompatiblePlatform = [System.Convert]::ToBoolean( $allowIncompati
 $option.VerifyDeployment = [System.Convert]::ToBoolean($verifyDeployment.Trim());
 $option.CreateNewDatabase =  [System.Convert]::ToBoolean($createNewDatabase.Trim());
 $option.CommandTimeout = [System.Convert]::ToInt32($commandTimeout);
-Write-Host $option;
 
+Write-Host [System.String]::Format("CreateNewDatabase:{0}",$option.CreateNewDatabase);
+Write-Host [System.String]::Format("CommandTimeout: {0}",$option.CommandTimeout);
+Write-Host [System.String]::Format("BlockOnPossibleDataLoss:{0}",$option.BlockOnPossibleDataLoss);
+Write-Host [System.String]::Format("AllowIncompatiblePlatform:{0}",$option.AllowIncompatiblePlatform);
+Write-Host [System.String]::Format("CompareUsingTargetCollation:{0}",$option.CompareUsingTargetCollation);
+Write-Host [System.String]::Format("VerifyDeployment:{0}",$option.VerifyDeployment);
+
+ 
 $dacService.Deploy($dp, $dbName, "True", $option)
-Write-Host "Concluiu o deploy"
-
-Write-Host "Terminando a execução"
+Write-Host "Finish Deploy"
 
 

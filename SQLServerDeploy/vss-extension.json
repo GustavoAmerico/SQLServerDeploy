@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "SQLServerDeploy",
   "name": "SQLServerDeploy",
-  "version": "0.3.8",
+  "version": "0.3.10",
   "publisher": "gustavoamerico",
   "public": true,
   "runsOn": [
@@ -18,6 +18,10 @@
   "categories": [
     "Build and release"
   ],
+  "branding": {
+    "color": "rgb(36, 43, 50)",
+    "theme": "dark"
+  },
   "icons": {
     "default": "images/icon.png",
     "large": "images/icon.png"
@@ -27,14 +31,11 @@
   ],
   "files": [
     {
+      "path": "readme-pt-br.md"
+    },
+    {
       "path": "images",
       "addressable": true
-    },
-    {
-      "path": "images/icon.png"
-    },
-    {
-      "path": "images/icon15x16.png"
     },
     {
       "path": "scripts",
@@ -46,7 +47,9 @@
     }
   ],
   "screenshots": [
-    "images/screenshot_1.png"
+    {
+      "path": "images/screenshot_1.png"
+    }
   ],
   "tags": [
     "msdeploy",
@@ -63,15 +66,9 @@
     "learn": {
       "uri": "http://gustavoamerico.net"
     },
-    "github": {
-      "uri": "https://github.com/GustavoAmerico/SQLServerDeploy/"
-    },
     "support": {
       "uri": "mailto:contato@gustavoamerico.net"
     }
-  },
-  "branding": {
-    "theme": "light"
   },
   "contributions": [
     {

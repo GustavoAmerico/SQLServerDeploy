@@ -79,7 +79,7 @@
          ],
          "properties":{
             "name":"scripts",
-            "icon": "images/icon.png",
+            "icon": "images/icon.png"
          }
       }
    ],

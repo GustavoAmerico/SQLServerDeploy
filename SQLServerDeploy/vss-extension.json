@@ -38,7 +38,7 @@
          "addressable":true
       },
       {
-         "path":"scripts",
+         "path":"Tasks",
          "addressable":true
       },
       {
@@ -78,7 +78,7 @@
             "ms.vss-distributed-task.tasks"
          ],
          "properties":{
-            "name":"scripts",
+            "name":"Tasks",
             "icon": "images/icon.png"
          }
       }

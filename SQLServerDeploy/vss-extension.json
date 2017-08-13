@@ -72,7 +72,7 @@
     },
     "contributions": [
         {
-            "id": "publish",
+            "id": "gustavoamerico",
             "name": "Deploy SQL Schema",
             "type": "ms.vss-distributed-task.task",
             "targets": [
@@ -84,7 +84,7 @@
             }
         },
         {
-            "id": "pack",
+            "id": "1561E90D-14CC-47DE-812F-33F62B04BE0A",
             "name": "Create SQL Schema (.dacpac)",
             "type": "ms.vss-distributed-task.task",
             "targets": [

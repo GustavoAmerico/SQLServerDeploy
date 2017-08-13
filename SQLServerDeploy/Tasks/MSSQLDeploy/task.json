@@ -8,8 +8,7 @@
   "helpMarkDown": "",
   "category": "Deploy",
   "visibility": [
-    "Build",
-    "Release"
+     "Release"
   ],
   "version": {
     "Major": 1,
@@ -19,7 +18,7 @@
   "demands": [
     "SqlPackage"
   ],
-  "author": "Gustavo Américo (@gustavoamerico)",
+  "author": "Gustavo Américo",
   "minimumAgentVersion": "1.89.0",
   "inputs": [
     {
@@ -66,7 +65,7 @@
       "name": "blockOnPossibleDataLoss",
       "type": "boolean",
       "label": "Block On possible data loss",
-      "required": "false",
+      "required": false,
       "helpMarkDown": "specifies whether deployment should stop if the operation could cause data loss."
     },
     {

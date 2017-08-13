@@ -5,8 +5,8 @@ param(
 )
 New-Item -ItemType Directory -Force -Path $output
 $msbuild = @{ 
-    performanceParameters = "/nologo", "/noconsolelogger", "/p:WarningLevel=0", "/clp:ErrorsOnly", "/m:1"
-    loggingParameters     = "/l:FileLogger,Microsoft.Build.Engine;logfile=$output\log.txt"
+    performanceParameters = "/nologo", "/p:WarningLevel=4", "/clp:Summary", "/m:1"
+    loggingParameters     = "/l:FileLogger,Microsoft.Build.Engine;logfile=$output\logdb.txt"
     packageParameters     = , "/property:outdir=$output", "/p:configuration=release"
     targets               = "/t:rebuild"
 }

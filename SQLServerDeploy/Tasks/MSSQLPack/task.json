@@ -8,6 +8,9 @@
   "helpMarkDown": "",
   "category": "Build",
   "visibility": [
+    "Build"   
+  ],
+  "galleryFlags": [
     "Preview"
   ],
   "version": {
@@ -16,7 +19,8 @@
     "Patch": 1
   },
   "demands": [
-    "SqlPackage"
+    "SqlPackage",
+    "msbuild"
   ],
   "author": "Gustavo Américo",
   "minimumAgentVersion": "1.89.0",
@@ -25,7 +29,7 @@
       "name": "output",
       "type": "filePath",
       "label": "Path for create the files output",
-      "defaultValue": "$(Build.ArtifactStagingDirectory)\\databases",
+      "defaultValue": "$(Build.ArtifactStagingDirectory)\\SQL",
       "required": true,
       "helpMarkDown": "The dacpac file path or root."
     }

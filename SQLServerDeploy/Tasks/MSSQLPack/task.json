@@ -1,6 +1,6 @@
 ﻿{
   "$schema": "https://raw.githubusercontent.com/AArnott/vso-agent-tasks/9b41d803a/tasks.schema.json",
-  "id": "1561E90D-14CC-47DE-812F-33F62B04BE0B",
+  "id": "1561E90D-14CC-47DE-812F-33F62B04BE0A",
   "name": "SQLServerPack",
   "instanceNameFormat": "Deploy $(dbName)",
   "friendlyName": "SQLServer Pack",

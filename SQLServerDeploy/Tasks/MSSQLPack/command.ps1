@@ -1,14 +1,15 @@
 ﻿[CmdletBinding(DefaultParameterSetName = 'None')]
 param(
-    [String] [Parameter(Mandatory = $True)] [string]
+     [String] [Parameter(Mandatory = $True)] [string]
     $filePattern ,
     [String] [Parameter(Mandatory = $True)] [string]
     $output 
 )
-New-Item -ItemType Directory -Force -Path $output
+
 $path = [environment]::GetEnvironmentVariable("windir","Process")+"\Microsoft.NET\Framework64\v4.0.30319";
 add-type -path $path
-
+ 
+New-Item -ItemType Directory -Force -Path $output
 
 $fileName = ($filePattern).Trim(); 
 Write-Host "Searching for:" $fileName
@@ -26,7 +27,12 @@ catch {
     Write-Host "There was an error loading the file";
     Throw;
 }
+<<<<<<< HEAD
 
+=======
+ 
+add-type -path "%windir%\Microsoft.NET\Framework64\v4.0.30319"
+>>>>>>> 99a728448493466d6d2bb2eac19e8da738681434
 $msbuild = @{ 
     performanceParameters = "/nologo", "/p:WarningLevel=4", "/clp:Summary", "/m:1"
     loggingParameters     = "/l:FileLogger,Microsoft.Build.Engine;logfile=$output\logdb.txt"

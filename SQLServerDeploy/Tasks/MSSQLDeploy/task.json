@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/AArnott/vso-agent-tasks/9b41d803a/tasks.schema.json",
   "id": "1561E90D-14CC-47DE-812F-33F62B04BE0B",
   "name": "SQLServerDeploy",
-  "instanceNameFormat": "Deploy $(dbName)",
+  "instanceNameFormat": "Deploy database $(dbName)",
   "friendlyName": "SQLServer Deploy Dacpac",
   "description": "Publish a dacpac file in especific database connection string",
   "helpMarkDown": "",

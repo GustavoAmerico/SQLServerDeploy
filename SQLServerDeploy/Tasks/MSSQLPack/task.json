@@ -26,6 +26,14 @@
   "minimumAgentVersion": "1.89.0",
   "inputs": [
     {
+      "name": "filePattern",
+      "type": "filePath",
+      "label": "SQL Project Path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The path from project (.sqlproj)."
+    },
+    {
       "name": "output",
       "type": "filePath",
       "label": "Path for create the files output",
@@ -33,6 +41,7 @@
       "required": true,
       "helpMarkDown": "The dacpac file path or root."
     }
+  
   ],
   "execution": {
     "PowerShell": {

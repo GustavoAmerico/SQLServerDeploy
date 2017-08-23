@@ -27,12 +27,9 @@ catch {
     Write-Host "There was an error loading the file";
     Throw;
 }
-<<<<<<< HEAD
 
-=======
- 
+
 add-type -path "%windir%\Microsoft.NET\Framework64\v4.0.30319"
->>>>>>> 99a728448493466d6d2bb2eac19e8da738681434
 $msbuild = @{ 
     performanceParameters = "/nologo", "/p:WarningLevel=4", "/clp:Summary", "/m:1"
     loggingParameters     = "/l:FileLogger,Microsoft.Build.Engine;logfile=$output\logdb.txt"

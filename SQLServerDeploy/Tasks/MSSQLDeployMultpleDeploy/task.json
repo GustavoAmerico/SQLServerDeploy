@@ -6,14 +6,14 @@
   "friendlyName": "SQLServer deploy all database",
   "description": "Publish a dacpac file for multiple database on server",
   "helpMarkDown": "",
-  "preview": true,
   "category": "Deploy",
   "runsOn": [
     "Agent",
     "MachineGroup"
   ],
   "visibility": [
-    "Release"
+    "Release",
+    "Preview"
   ],
   "version": {
     "Major": 0,

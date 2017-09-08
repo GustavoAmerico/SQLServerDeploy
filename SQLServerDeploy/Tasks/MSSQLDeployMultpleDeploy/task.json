@@ -16,12 +16,12 @@
     "Preview"
   ],
   "version": {
-    "Major": 0,
+    "Major": 1,
     "Minor": 0,
     "Patch": 0
   },
   "demands": [
-    "SqlPackage"
+    "SqlServerDac"
   ],
   "author": "Gustavo Américo",
   "minimumAgentVersion": "1.89.0",

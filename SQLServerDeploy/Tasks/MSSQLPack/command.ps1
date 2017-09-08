@@ -29,7 +29,7 @@ catch {
 }
 
 
-add-type -path "%windir%\Microsoft.NET\Framework64\v4.0.30319"
+# add-type -path "%windir%\Microsoft.NET\Framework64\v4.0.30319"
 $msbuild = @{ 
     performanceParameters = "/nologo", "/p:WarningLevel=4", "/clp:Summary", "/m:1"
     loggingParameters     = "/l:FileLogger,Microsoft.Build.Engine;logfile=$output\logdb.txt"

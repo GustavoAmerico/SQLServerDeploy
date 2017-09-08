@@ -8,9 +8,7 @@
   "helpMarkDown": "",
   "category": "Build",
   "visibility": [
-    "Build"   
-  ],
-  "galleryFlags": [
+    "Build",
     "Preview"
   ],
   "version": {
@@ -20,7 +18,7 @@
   },
   "demands": [
     "SqlPackage",
-    "msbuild"
+    "MSBuild_4.0_x64"
   ],
   "author": "Gustavo Américo",
   "minimumAgentVersion": "1.89.0",
@@ -41,7 +39,6 @@
       "required": true,
       "helpMarkDown": "The dacpac file path or root."
     }
-  
   ],
   "execution": {
     "PowerShell": {

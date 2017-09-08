@@ -37,7 +37,7 @@ param(
     [String] [Parameter(Mandatory = $False)]
     $createNewDatabase = "false"
 )
-add-type -path "C:\Program Files (x86)\Microsoft SQL Server\120\DAC\bin\Microsoft.SqlServer.Dac.dll"
+# add-type -path "C:\Program Files (x86)\Microsoft SQL Server\120\DAC\bin\Microsoft.SqlServer.Dac.dll"
   
 #Load Microsoft.SqlServer.Dac assembly
 [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.Dac")

@@ -16,7 +16,7 @@
     "Patch": 0
   },
   "demands": [
-    "SqlPackage"
+    "SqlPackage"    
   ],
   "author": "Gustavo Américo",
   "minimumAgentVersion": "1.89.0",

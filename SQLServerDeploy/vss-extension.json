@@ -2,9 +2,9 @@
     "manifestVersion": 1,
     "id": "SQLServerDeploy",
     "name": "SQLServerDeploy",
-    "version": "1.1.8300",
+    "version": "1.1.90800",
     "publisher": "gustavoamerico",
-    "public": true,
+    "public": false,
     "runsOn": [
         "Agent",
         "DeploymentGroup"
@@ -80,6 +80,7 @@
             }
         },
         {
+            "id": "1561E90D-14CC-47DE-812F-33F62B04BE0A",
             "name": "Create SQL Schema (.dacpac)",
             "type": "ms.vss-distributed-task.task",
             "targets": [
@@ -91,7 +92,7 @@
             }
         },
         {
-            "id":"SQLServerDeployMultiDatabase",
+            "id": "SQLServerDeployMultiDatabase",
             "name": "Deploy SQL Schema for multiple database in server",
             "type": "ms.vss-distributed-task.task",
             "targets": [

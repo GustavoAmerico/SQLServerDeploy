@@ -6,8 +6,8 @@ param(
     $output 
 )
 
-$path = [environment]::GetEnvironmentVariable("windir","Process")+"\Microsoft.NET\Framework64\v4.0.30319";
-add-type -path $path
+# $path = [environment]::GetEnvironmentVariable("windir","Process")+"\Microsoft.NET\Framework64\v4.0.30319";
+# add-type -path $path
  
 New-Item -ItemType Directory -Force -Path $output
 

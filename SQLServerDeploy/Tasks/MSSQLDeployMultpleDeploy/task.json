@@ -16,7 +16,7 @@
   ],
   "version": {
     "Major": 1,
-    "Minor": 1,
+    "Minor": 2,
     "Patch": 0
   },
   "demands": [
@@ -24,6 +24,7 @@
   ],
   "author": "Gustavo Américo",
   "minimumAgentVersion": "1.89.0",
+   
   "inputs": [
     {
       "name": "dacpacPattern",
@@ -31,8 +32,7 @@
       "label": "File name pattern",
       "defaultValue": "**/*.dacpac",
       "helpMarkDown": "The name or pattern for search an dacpac file",
-      "required": true,
-      "groupName": "File for deploy"
+      "required": true
     },
     {
       "name": "dacpacPath",
@@ -40,8 +40,7 @@
       "label": "Path or path root",
       "defaultValue": "$(System.DefaultWorkingDirectory)",
       "required": true,
-      "helpMarkDown": "The dacpac file path or root.",
-      "groupName": "File for deploy"
+      "helpMarkDown": "The dacpac file path or root."
     },
     {
       "name": "server",
@@ -49,8 +48,8 @@
       "label": "Domain name or IP and port",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "The server domain name or IP and port ([database_domain_name or IP],[port]) <192.168.0.3,1433>",
-      "groupName": "Connect for server"
+      "helpMarkDown": "The server domain name or IP and port ([database_domain_name or IP],[port]) <192.168.0.3,1433>"
+      
     },
     {
       "name": "userId",
@@ -58,17 +57,15 @@
       "label": "SQL User",
       "defaultValue": "sa",
       "required": true,
-      "helpMarkDown": "The sql server user with grant access for create/alter schema",
-      "groupName": "Connect for server"
-    },
+      "helpMarkDown": "The sql server user with grant access for create/alter schema"
+      },
     {
       "name": "password",
       "type": "string",
       "label": "SQL User Password",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "",
-      "groupName": "Connect for server"
+      "helpMarkDown": "" 
     },
     {
       "name": "dbName",

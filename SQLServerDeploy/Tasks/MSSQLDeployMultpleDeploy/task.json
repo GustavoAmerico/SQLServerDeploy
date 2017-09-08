@@ -1,18 +1,23 @@
 ﻿{
   "$schema": "https://raw.githubusercontent.com/AArnott/vso-agent-tasks/9b41d803a/tasks.schema.json",
-  "id": "1561E90D-14CC-47DE-812F-33F62B04BE0B",
-  "name": "SQLServerDeploy",
-  "instanceNameFormat": "Deploy database $(dbName)",
-  "friendlyName": "SQLServer Deploy Dacpac",
-  "description": "Publish a dacpac file in especific database connection string",
+  "id": "1561E90D-14CC-47DE-812F-33F62B04BE0C",
+  "name": "SQLServerMultiDeploy",
+  "instanceNameFormat": "Deploy all database",
+  "friendlyName": "SQLServer deploy all database",
+  "description": "Publish a dacpac file for multiple database on server",
   "helpMarkDown": "",
+  "preview": true,
   "category": "Deploy",
+  "runsOn": [
+    "Agent",
+    "MachineGroup"
+  ],
   "visibility": [
-     "Release"
+    "Release"
   ],
   "version": {
-    "Major": 1,
-    "Minor": 4,
+    "Major": 0,
+    "Minor": 0,
     "Patch": 0
   },
   "demands": [
@@ -27,7 +32,8 @@
       "label": "File name pattern",
       "defaultValue": "**/*.dacpac",
       "helpMarkDown": "The name or pattern for search an dacpac file",
-      "required": true
+      "required": true,
+      "groupName": "File for deploy"
     },
     {
       "name": "dacpacPath",
@@ -35,20 +41,40 @@
       "label": "Path or path root",
       "defaultValue": "$(System.DefaultWorkingDirectory)",
       "required": true,
-      "helpMarkDown": "The dacpac file path or root."
+      "helpMarkDown": "The dacpac file path or root.",
+      "groupName": "File for deploy"
     },
     {
-      "name": "connectionString",
+      "name": "server",
       "type": "string",
-      "label": "SQL ConnectionString",
+      "label": "Domain name or IP and port",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "Server=tcp:{[database_domain_name or IP], [port]};Initial Catalog={databaseName};Persist Security Info=False;User ID={your_username};Password={your_password};MultipleActiveResultSets=True;Encrypt=True;"
+      "helpMarkDown": "The server domain name or IP and port ([database_domain_name or IP],[port]) <192.168.0.3,1433>",
+      "groupName": "Connect for server"
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "label": "SQL User",
+      "defaultValue": "sa",
+      "required": true,
+      "helpMarkDown": "The sql server user with grant access for create/alter schema",
+      "groupName": "Connect for server"
+    },
+    {
+      "name": "password",
+      "type": "string",
+      "label": "SQL User Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "",
+      "groupName": "Connect for server"
     },
     {
       "name": "dbName",
-      "type": "string",
-      "label": "Database name",
+      "type": "multiLine",
+      "label": "name of the database separated by (;)",
       "defaultValue": "",
       "helpMarkDown": "The database name for publish package",
       "required": true

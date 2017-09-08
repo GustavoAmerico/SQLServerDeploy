@@ -36,7 +36,7 @@ $msbuild = @{
     packageParameters     = , "/property:outdir=$output", "/p:configuration=release"
     targets               = "/t:rebuild"
 }
-MSBuild $fileName `
+msbuild $fileName `
     $msbuild.performanceParameters `
     $msbuild.packageParameters `
     $msbuild.loggingParameters `

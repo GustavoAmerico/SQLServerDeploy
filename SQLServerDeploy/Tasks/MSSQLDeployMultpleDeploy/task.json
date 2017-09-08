@@ -12,8 +12,7 @@
     "MachineGroup"
   ],
   "visibility": [
-    "Release",
-    "Preview"
+    "Release" ,"Build" 
   ],
   "version": {
     "Major": 1,

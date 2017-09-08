@@ -8,7 +8,7 @@
   "helpMarkDown": "",
   "category": "Deploy",
   "visibility": [
-     "Release"
+     "Release","Build"
   ],
   "version": {
     "Major": 1,

@@ -40,6 +40,10 @@
         {
             "path": "Tasks/MSSQLPack/",
             "addressable": true
+        },
+        {
+            "path": "Tasks/MSSQLDeployMultpleDeploy",
+            "addressable": true
         }
     ],
     "screenshots": [

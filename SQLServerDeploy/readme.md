@@ -8,10 +8,10 @@ The SQLServer Deploy is a set of scripts that are able to perform the publicatio
 The executed script searches for a file that matches the pattern entered, connects to the database using the connection string, instantiates a class, from the SDDT package, configures the execution of the publication, and executes deploy.
 
 
-![alt text](images/screenshot_1.png "Scheenshot")
+![alt text](./images/screenshot_1.png "Scheenshot")
 
 ## **Requirements:**
-For this task to run the "Agent" running server must have installed SQL Server Data Tools in the directory C:\Program Files (x86)\Microsoft SQL Server\120\DAC\bin\Microsoft.SqlServer.Dac.dll
+For this task to run the "Agent" running server must have installed SQL Server Data Tools in the directory C:\Program Files (x86)\Microsoft SQL Server\120+\DAC\bin\Microsoft.SqlServer.Dac.dll
 
 [Link para download](https://docs.microsoft.com/pt-br/sql/ssdt/download-sql-server-data-tools-ssdt)
 

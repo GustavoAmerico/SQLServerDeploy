@@ -32,6 +32,8 @@ param(
     $createNewDatabase ="false"
 )
  add-type -path "C:\Program Files (x86)\Microsoft SQL Server\120\DAC\bin\Microsoft.SqlServer.Dac.dll"
+
+ 
 if (![System.IO.Directory]::Exists($dacpacPath)) {
     Write-Host "No directory found:" $dacpacPath;
     return;

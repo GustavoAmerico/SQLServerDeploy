@@ -6,8 +6,7 @@ param(
     $output 
 )
 
-# $path = [environment]::GetEnvironmentVariable("windir","Process")+"\Microsoft.NET\Framework64\v4.0.30319";
-# add-type -path $path
+
  
 New-Item -ItemType Directory -Force -Path $output
 
@@ -29,15 +28,38 @@ catch {
 }
 
 
-# add-type -path "%windir%\Microsoft.NET\Framework64\v4.0.30319"
-$msbuild = @{ 
+function Resolve-MsBuild {
+	$msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue
+	if($msb2017) {
+		Write-Host "Found MSBuild 2017 (or later)."
+		Write-Host $msb2017
+		return $msb2017
+	}
+
+	$msBuild2015 = "${env:ProgramFiles(x86)}\MSBuild\14.0\bin\msbuild.exe"
+
+	if(-not (Test-Path $msBuild2015)) {
+		throw 'Could not find MSBuild 2015 or later.'
+	}
+
+	Write-Host "Found MSBuild 2015."
+	Write-Host $msBuild2015
+
+	return $msBuild2015
+}
+
+
+$msbuild = Resolve-MsBuild
+ 
+$msbuildArgs = @{ 
     performanceParameters = "/nologo", "/p:WarningLevel=4", "/clp:Summary", "/m:1"
     loggingParameters     = "/l:FileLogger,Microsoft.Build.Engine;logfile=$output\logdb.txt"
     packageParameters     = , "/property:outdir=$output", "/p:configuration=release"
     targets               = "/t:rebuild"
 }
-msbuild $fileName `
-    $msbuild.performanceParameters `
-    $msbuild.packageParameters `
-    $msbuild.loggingParameters `
-    $msbuild.targets
+
+& $msbuild $fileName `
+    $msbuildArgs.performanceParameters `
+    $msbuildArgs.packageParameters `
+    $msbuildArgs.loggingParameters `
+    $msbuildArgs.targets

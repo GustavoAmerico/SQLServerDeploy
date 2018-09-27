@@ -4,14 +4,14 @@
   "author": "Gustavo Américo Gonçalves <contato@gustavoamerico.net> (http://gustavoamerico.net)",
   "description": "The task need from sql server and SDDT instaled in agent",
   "scripts": {
-    "build": "tfx extension create --manifest-globs SQLServerDeploy/vss-extension.json --rev-version"    
+    "build": "tfx extension create --manifest-globs SQLServerDeploy/vss-extension.json --rev-version"
   },
   "main": "SQLServerDeploy",
   "devDependencies": {
-    "tfx-cli": "^0.4.9"
+    "tfx-cli": "^0.4.16"
   },
   "dependencies": {
-    "vss-web-extension-sdk": "^2.117.0"
+    "vss-web-extension-sdk": "5.140.0"
   },
   "repository": {
     "type": "git",

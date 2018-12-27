@@ -1,0 +1,7 @@
+.git
+.vs
+node_modules
+
+
+*.png
+*.json

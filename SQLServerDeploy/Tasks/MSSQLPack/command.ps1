@@ -5,29 +5,7 @@ param(
     [String] [Parameter(Mandatory = $True)] [string]
     $output 
 )
-
-
  
-New-Item -ItemType Directory -Force -Path $output
-
-$fileName = ($filePattern).Trim(); 
-Write-Host "Searching for:" $fileName
-try {
- 
-    $file = Get-ChildItem $fileName -Recurse  
-    if ($file.Length -eq 0) {
-        Throw "No files found"
-    }
-    else {
-        Write-Host "Found file: " $file
-    }
-}
-catch {
-    Write-Host "There was an error loading the file";
-    Throw;
-}
-
-
 function Resolve-MsBuild {
 	$msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue
 	if($msb2017) {
@@ -48,18 +26,55 @@ function Resolve-MsBuild {
 	return $msBuild2015
 }
 
-
-$msbuild = Resolve-MsBuild
- 
-$msbuildArgs = @{ 
-    performanceParameters = "/nologo", "/p:WarningLevel=4", "/clp:Summary", "/m:1"
-    loggingParameters     = "/l:FileLogger,Microsoft.Build.Engine;logfile=$output\logdb.txt"
-    packageParameters     = , "/property:outdir=$output", "/p:configuration=release"
-    targets               = "/t:rebuild"
+function Install-Dependency { 
+     Write-Host 'Installing SQL Server Data Tools from nuget'
+     nuget.exe install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210
 }
 
-& $msbuild $fileName `
-    $msbuildArgs.performanceParameters `
-    $msbuildArgs.packageParameters `
-    $msbuildArgs.loggingParameters `
-    $msbuildArgs.targets
+function BuildSqlProject {
+param([String] [Parameter(Mandatory = $True)] $file)
+    $nugetPath = ($env:userprofile + '\.nuget\packages\microsoft.data.tools.msbuild\10.0.61804.210\lib\net46');
+
+    $msbuild = Resolve-MsBuild
+    $msbuildArgs = @{ 
+        performanceParameters = "/nologo", "/p:WarningLevel=4", "/clp:Summary", "/m:1"
+        loggingParameters     = "/l:FileLogger,Microsoft.Build.Engine;logfile=$output\logdb.txt"
+        packageParameters     = , "/property:outdir=$output", "/p:configuration=release","/p:SQLDBExtensionsRefPath=$nugetPath","/p:SqlServerRedistPath=$nugetPath"
+        targets               = "/t:rebuild"
+    }
+    
+    & $msbuild  $file `
+        $msbuildArgs.performanceParameters `
+        $msbuildArgs.packageParameters `
+        $msbuildArgs.loggingParameters `
+        $msbuildArgs.targets
+
+}
+
+New-Item -ItemType Directory -Force -Path $output
+
+try {
+
+    $fileName = ($filePattern).Trim(); 
+    Write-Host "Searching for:" $fileName
+
+    $files = Get-ChildItem $fileName -Recurse  
+    if ($files.Length -eq 0) {
+        Throw "No files found"
+    }
+    else {
+        foreach ($file in $files){
+
+        Write-Host "Found file: " $file
+        Install-Dependency;
+        BuildSqlProject $file;
+    }
+}
+}
+catch {
+    Write-Host "There was an error loading the file";
+    Throw;
+}
+
+
+

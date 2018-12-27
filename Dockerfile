@@ -27,13 +27,20 @@ RUN $env:PATH = $env:MSBUILD_PATH + ';' + $env:PATH;
 RUN [Environment]::SetEnvironmentVariable('PATH', $env:PATH, [EnvironmentVariableTarget]::Machine)
 
 
-FROM base as final
-ENV Task='Build' 
-#VOLUME [ C:\output\, C:\ProjectPath\ ]
+FROM base as package
 WORKDIR /src
 COPY 'SQLServerDeploy\\Tasks\\MSSQLPack' '.'
 WORKDIR /ProjectPath/
 ENTRYPOINT [ "powershell" ,  "/src/command.ps1",  "*.sqlproj",  "'/output'" ]
+    
+
+
+# #not finished
+# FROM base as deploy
+# WORKDIR /src
+# COPY 'SQLServerDeploy\\Tasks\\MSSQLDeployMultpleDeploy' '.'
+# WORKDIR /dacpacs/
+# ENTRYPOINT [ "powershell" ,  "/src/command.ps1",  "*.sqlproj",  "'/output'" ]
     
 
 

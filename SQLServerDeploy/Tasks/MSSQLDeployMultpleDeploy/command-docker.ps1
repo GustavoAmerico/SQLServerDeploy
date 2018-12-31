@@ -16,7 +16,7 @@ param(
     [String] [Parameter(Mandatory = $True)]
     $userId,
 
-    [SecureString] [Parameter(Mandatory = $True)]
+    [String] [Parameter(Mandatory = $True)]
     $password,
 
     [String] [Parameter(Mandatory = $False)]
@@ -31,18 +31,23 @@ param(
     [String] [Parameter(Mandatory = $False)]
     $allowIncompatiblePlatform = "true",
 
-    [Int32][Parameter(Mandatory = $true)]
-    $commandTimeout = 7200,
+    [String][Parameter(Mandatory = $True)]
+    $commandTimeout = "7200",
 
     [String] [Parameter(Mandatory = $False)]
     $createNewDatabase = "false"
 )
-# add-type -path "C:\Program Files (x86)\Microsoft SQL Server\120\DAC\bin\Microsoft.SqlServer.Dac.dll"
-#Load Microsoft.SqlServer.Dac assembly
+ 
+. C:\src\functions-help.ps1
+
 [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.Dac")
+ 
+Write-Host ("Find by file: $dacpacPattern")
+Write-Host ("Publish on Server: $server")
+Write-Host ("On databases: $dbName")
+  
+
+DeployDb($dacpacPattern, $dacpacPath, $server, $dbName, $userId, $password, $blockOnPossibleDataLoss, $verifyDeployment, $compareUsingTargetCollation , $allowIncompatiblePlatform, $commandTimeout, $createNewDatabase);
 
 
-. C:\src\functions-help.ps1  
-
-
-DeployDb($dacpacPattern, $dacpacPath, $server, $dbName, $userId, $password, $blockOnPossibleDataLoss, $verifyDeployment, $compareUsingTargetCollation , $allowIncompatiblePlatform, $commandTimeout, $createNewDatabase)
+ 

@@ -1,9 +1,16 @@
 
 function GetDatabaseList() {
     param(   
-        [String] [Parameter(Mandatory = $True)]
+        [String] [Parameter(Mandatory = $True )]
         $dbName     
     )
+
+    if ([string]::IsNullOrEmpty($dbName))
+{
+    Write-Error "The database name not can be null";
+    return null;
+}
+
     $allDatabases = $dbName.Split(';');
     if ($allDatabases.Length -eq 0) {
         Throw "Without database selected";
@@ -89,8 +96,8 @@ function  CreateDacDeployOptions() {
 
 function DeployDb() {
     param(       
-         [Parameter(Mandatory = $True)]
-        $dacpacPattern,
+         [Parameter(Mandatory = $False)]
+        $dacpacPattern = "**\*.dacpac",
 
         [Parameter(Mandatory = $True)]
         $dacpacPath,

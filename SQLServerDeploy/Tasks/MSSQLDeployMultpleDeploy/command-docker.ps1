@@ -55,8 +55,11 @@ Write-Host ('View all database name: ' + $ENV:databases);
 $allDatabases = GetDatabaseList ('"'+ $env:databases +'"') ;
 
 Write-Host ('Find by  files: ' + $ENV:dacpacPattern + ' in path ' + $env:dacpacpath);
-$dacPack = GetDacPackage ('"'+$ENV:dacpacPattern +'"')  ('"'+$env:dacpacpath +'"')  ;
-
+$dacPack = GetDacPackage  $ENV:dacpacPattern  $env:dacpacpath  ;
+if(-not $dacPack){
+  Write-Error 'Not found the file dacpac for publish database schema';
+  return;
+}else{
 
 $option = CreateDacDeployOptions($env:blockOnPossibleDataLoss, $env:verifyDeployment, $env:compareUsingTargetCollation , $env:allowIncompatiblePlatform, $env:commandTimeout, $env:createNewDatabase) ;
 Write-Host "Start deploy file"
@@ -74,7 +77,7 @@ foreach ($database in $allDatabases) {
         Write-Host "Error Deploy to $database"
     }
 }
-
+}
 Write-Host "Finish deploy for all database"
 
 #DeployDb($ENV:dacpacPattern, '/dacpacfiles', $ENV:server, $ENV:dbName, $ENV:userId, $ENV:password, $ENV:blockOnPossibleDataLoss, $ENV:verifyDeployment, $ENV:compareUsingTargetCollation , $ENV:allowIncompatiblePlatform, $ENV:commandTimeout, $ENV:createNewDatabase);

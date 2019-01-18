@@ -1,4 +1,20 @@
-
+function TryResgisterSqlServerDac()
+{
+  
+    [System.Reflection.Assembly]::Load("System.EnterpriseServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
+    $publish = New-Object System.EnterpriseServices.Internal.Publish ;
+    $files =Get-ChildItem @('C:\Program Files (x86)\Microsoft SQL Server\**\Microsoft.SqlServer.Dac.dll', 'C:\Program Files (x86)\Microsoft Visual Studio\**\Microsoft.SqlServer.Dac.dll','C:\Microsoft.Data.Tools.Msbuild**\lib\**\Microsoft.SqlServer.Dac.dll', '**\.nuget\packages\microsoft.data.tools.msbuild\*\lib\**\Microsoft.SqlServer.Dac.dll' ) -Recurse -ErrorAction SilentlyContinue ;
+    $dllIsRegister = $False;
+    ForEach ($file in  $files){ 
+      Write-Host ('Try register dll ' + $file.FullName);
+    #$publish.GacInstall($file.FullName);
+     # [System.Reflection.Assembly]::LoadFile($file.FullName)
+      add-type -path $file.FullName
+      $dllIsRegister = $True;
+    } 
+     
+    return $dllIsRegister;
+}   
 function GetDatabaseList() {
     param(   
         [String] [Parameter(Mandatory = $True )]
@@ -41,13 +57,16 @@ function GetDacPackage() {
             Throw "No files found"
         }
         else {
-            Write-Host "Found file: " $file
+            Write-Host "Found file: " $file;
+           TryResgisterSqlServerDac
+
         }
     }
     catch {
         Write-Host "There was an error loading the file";
         Throw;
     }
+    
     $dp = [Microsoft.SqlServer.Dac.DacPackage]::Load($file);
     return $dp;
 }
@@ -72,6 +91,7 @@ function  CreateDacDeployOptions() {
         [String] [Parameter(Mandatory = $False)]
         $createNewDatabase = "false"
     )
+    [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.Dac")
     Write-Host "Preparing Publishing Variables"
     $option = new-object Microsoft.SqlServer.Dac.DacDeployOptions 
     $option.CommandTimeout = 7200; 
@@ -155,3 +175,4 @@ function DeployDb() {
 
     Write-Host "Finish deploy for all database"
 }
+

@@ -29,9 +29,12 @@ param(
     $commandTimeout = 7200,
 
     [String] [Parameter(Mandatory = $False)]
-    $createNewDatabase ="false"
+    $createNewDatabase ="false",
+
+    [String] [Parameter(Mandatory = $False)]
+    $sqlVersion = "120"
 )
- add-type -path "C:\Program Files (x86)\Microsoft SQL Server\120\DAC\bin\Microsoft.SqlServer.Dac.dll"
+ add-type -path "C:\Program Files (x86)\Microsoft SQL Server\$($sqlVersion)\DAC\bin\Microsoft.SqlServer.Dac.dll"
 
  
 if (![System.IO.Directory]::Exists($dacpacPath)) {
@@ -68,7 +71,6 @@ Write-Host "Connected to server"
 
 Write-Host "Preparing Publishing Variables"
 $option = new-object Microsoft.SqlServer.Dac.DacDeployOptions 
-$option.CommandTimeout = 7200; 
 $option.BlockOnPossibleDataLoss = [System.Convert]::ToBoolean($blockOnPossibleDataLoss.Trim());
 $option.CompareUsingTargetCollation = [System.Convert]::ToBoolean( $compareUsingTargetCollation.Trim());
 $option.AllowIncompatiblePlatform = [System.Convert]::ToBoolean( $allowIncompatiblePlatform.Trim());

@@ -92,6 +92,7 @@ Write-Host [System.String]::Format("BlockOnPossibleDataLoss:{0}",$option.BlockOn
 Write-Host [System.String]::Format("AllowIncompatiblePlatform:{0}",$option.AllowIncompatiblePlatform);
 Write-Host [System.String]::Format("CompareUsingTargetCollation:{0}",$option.CompareUsingTargetCollation);
 Write-Host [System.String]::Format("VerifyDeployment:{0}",$option.VerifyDeployment);
+Write-Host [System.String]::Format("sqlVersion:{0}",$sqlVersion);
 Write-Host "`$Variables"
 Write-Host $Variables
 

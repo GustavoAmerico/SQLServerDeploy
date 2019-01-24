@@ -102,6 +102,22 @@
       "defaultValue": "false",
       "required": false,
       "helpMarkDown": "Specifies whether the existing database will be dropped and a new database created before proceeding with the actual deployment actions. Acquires single-user mode before dropping the existing database.(Not Recomend for production)"
+    },
+    {
+      "name": "sqlVersion",
+      "type": "string",
+      "label": "SQL Version",
+      "defaultValue": "120",
+      "required": false,
+      "helpMarkDown": "Specifies the SQL version to the path where the DACPAC libary is found."
+    },
+    {
+      "name": "variablesInput",
+      "type": "string",
+      "label": "Variables for the database deployment",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specifies any variables that should be used as part of the SSDT variables."
     }
   ],
   "execution": {

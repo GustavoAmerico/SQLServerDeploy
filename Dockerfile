@@ -40,14 +40,13 @@ RUN mkdir '/dacpacfiles'
 WORKDIR /src
 COPY 'SQLServerDeploy\\Tasks\\MSSQLDeployMultpleDeploy' '.'
 #RUN Intall-Package sql2017-dacframework
-RUN [System.Environment]::SetEnvironmentVariable('dacpacPattern','**/*.dacpac',  [System.EnvironmentVariableTarget]::Machine), \
+RUN [System.Environment]::SetEnvironmentVariable('dacpacPattern','**/*.dacpac',  [System.EnvironmentVariableTarget]::Machine),\
 
 #The server domain name or IP and port ([database_domain_name or IP],[port])# <192.168.0.3,1433>
-[System.Environment]::SetEnvironmentVariable('server', 'localhost',  [System.EnvironmentVariableTarget]::Machine),\
+[System.Environment]::SetEnvironmentVariable('server', 'localhost',  [System.EnvironmentVariableTarget]::Machine), \
 
 #The sql server user with grant access for create/alter schema
 [System.Environment]::SetEnvironmentVariable('userId','sa', [System.EnvironmentVariableTarget]::Machine), \
-
 #SQL User Password
 [System.Environment]::SetEnvironmentVariable('password','123', [System.EnvironmentVariableTarget]::Machine), \
 
@@ -67,11 +66,11 @@ RUN [System.Environment]::SetEnvironmentVariable('dacpacPattern','**/*.dacpac', 
 [System.Environment]::SetEnvironmentVariable('createNewDatabase','false', [System.EnvironmentVariableTarget]::Machine),\
 
 #Time for connection wait publish
-[System.Environment]::SetEnvironmentVariable('commandTimeout',17200,[System.EnvironmentVariableTarget]::Machine), \
- 
+[System.Environment]::SetEnvironmentVariable('commandTimeout',17200,[System.EnvironmentVariableTarget]::Machine), \ 
 #"specifies whether deployment should stop if the operation could cause #data loss."
 [System.Environment]::SetEnvironmentVariable('blockOnPossibleDataLoss','true', [System.EnvironmentVariableTarget]::Machine), \
-[System.Environment]::SetEnvironmentVariable('dacpacpath','C:\\dacpacfiles', [System.EnvironmentVariableTarget]::Machine) ;
+[System.Environment]::SetEnvironmentVariable('dacpacpath','C:\\dacpacfiles', [System.EnvironmentVariableTarget]::Machine), \
+[System.Environment]::SetEnvironmentVariable('UseWindowsAuthentication', 'false', [System.EnvironmentVariableTarget]::Machine) ;
 
 ENTRYPOINT powershell C:\src\command-docker.ps1
 
@@ -86,4 +85,6 @@ ENTRYPOINT powershell C:\src\command-docker.ps1
 # docker build -f .\Dockerfile -t sqlservertool:4.7.2 .
 
 
-#docker run -v C:\temp:C:\dacpacfiles sqlserver-deploy:latest
+
+#docker build --rm -f ..\..\..\Dockerfile --target deploy -t sqlserver-deploy ..\..\..\; 
+#docker run -e 'password="NJI90okm!"'`  --rm  -v 'C:\temp:C:\dacpacfiles' sqlserver-deploy:latest

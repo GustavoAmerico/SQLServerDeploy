@@ -2,6 +2,7 @@
 node_modules/
 .vscode/
 .vs/
+.git/
 .json
 .png
 .md

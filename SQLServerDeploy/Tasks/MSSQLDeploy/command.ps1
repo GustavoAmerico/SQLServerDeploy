@@ -29,9 +29,15 @@ param(
     $commandTimeout = 7200,
 
     [String] [Parameter(Mandatory = $False)]
-    $createNewDatabase ="false"
+    $createNewDatabase ="false",
+
+    [String] [Parameter(Mandatory = $False)]
+    $sqlVersion = "120",
+
+    [String] [Parameter(Mandatory = $False)]
+    $variablesInput = ""
 )
- add-type -path "C:\Program Files (x86)\Microsoft SQL Server\120\DAC\bin\Microsoft.SqlServer.Dac.dll"
+ add-type -path "C:\Program Files (x86)\Microsoft SQL Server\$($sqlVersion)\DAC\bin\Microsoft.SqlServer.Dac.dll"
 
  
 if (![System.IO.Directory]::Exists($dacpacPath)) {
@@ -68,13 +74,17 @@ Write-Host "Connected to server"
 
 Write-Host "Preparing Publishing Variables"
 $option = new-object Microsoft.SqlServer.Dac.DacDeployOptions 
-$option.CommandTimeout = 7200; 
 $option.BlockOnPossibleDataLoss = [System.Convert]::ToBoolean($blockOnPossibleDataLoss.Trim());
 $option.CompareUsingTargetCollation = [System.Convert]::ToBoolean( $compareUsingTargetCollation.Trim());
 $option.AllowIncompatiblePlatform = [System.Convert]::ToBoolean( $allowIncompatiblePlatform.Trim());
 $option.VerifyDeployment = [System.Convert]::ToBoolean($verifyDeployment.Trim());
 $option.CreateNewDatabase =  [System.Convert]::ToBoolean($createNewDatabase.Trim());
 $option.CommandTimeout = [System.Convert]::ToInt32($commandTimeout);
+$Variables = ConvertFrom-StringData -StringData $variablesInput
+foreach($VariableKey in $Variables.Keys)
+{
+    $option.SqlCommandVariableValues.Add($VariableKey, $Variables[$VariableKey])
+}
 
 Write-Host [System.String]::Format("CreateNewDatabase:{0}",$option.CreateNewDatabase);
 Write-Host [System.String]::Format("CommandTimeout: {0}",$option.CommandTimeout);
@@ -82,6 +92,9 @@ Write-Host [System.String]::Format("BlockOnPossibleDataLoss:{0}",$option.BlockOn
 Write-Host [System.String]::Format("AllowIncompatiblePlatform:{0}",$option.AllowIncompatiblePlatform);
 Write-Host [System.String]::Format("CompareUsingTargetCollation:{0}",$option.CompareUsingTargetCollation);
 Write-Host [System.String]::Format("VerifyDeployment:{0}",$option.VerifyDeployment);
+Write-Host [System.String]::Format("sqlVersion:{0}",$sqlVersion);
+Write-Host "`$Variables"
+Write-Host $Variables
 
  
 $dacService.Deploy($dp, $dbName, "True", $option)

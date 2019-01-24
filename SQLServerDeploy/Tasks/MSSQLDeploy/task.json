@@ -113,7 +113,7 @@
     },
     {
       "name": "variablesInput",
-      "type": "string",
+      "type": "multiLine",
       "label": "Variables for the database deployment",
       "defaultValue": "false",
       "required": false,

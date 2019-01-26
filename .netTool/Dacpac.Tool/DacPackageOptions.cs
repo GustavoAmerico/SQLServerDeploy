@@ -48,25 +48,32 @@ namespace Dacpac.Tool
 
             // Read the arguments sended by user
             if (string.IsNullOrWhiteSpace(path))
+            {
                 path = Environment.CurrentDirectory;
+                Console.WriteLine("Your no send the dacpac path, we will search in {0}", path);
+            }
 
             if (string.IsNullOrWhiteSpace(fileNamePattern))
+            {
                 fileNamePattern = @"*.dacpac";
+                Console.WriteLine("Your no send the dacpac pattern name, we will search by {0}", fileNamePattern);
+            }
 
             if (!TryGetFiles(path, fileNamePattern, out string[] files) || !files.Any())
             {
                 //TODO: write help
-                System.Diagnostics.Trace.TraceError("No file find: {0}/{1}", path, fileNamePattern);
+                Console.Error.WriteLine("No file find: {0}/{1}", path, fileNamePattern);
                 return null;
             }
             if (files.Length > 1)
             {
                 //TODO: write help
-                System.Diagnostics.Trace.TraceError("No can exists multiple files per pattern in directory: {0}/{1}", path, fileNamePattern);
+                Console.Error.WriteLine("No can exists multiple files per pattern in directory: {0}/{1}", path, fileNamePattern);
                 return null;
             }
             try
             {
+                Console.WriteLine("Found file: {0}", files[0]);
                 var packge = Microsoft.SqlServer.Dac.DacPackage.Load(files[0]);
                 LoadConnectionStrins();
                 return packge;
@@ -75,13 +82,13 @@ namespace Dacpac.Tool
             }
             catch (TypeInitializationException typeInitializationException)
             {
-                System.Diagnostics.Trace.TraceError("An error on read dacpac file: {0}/{1}", path, fileNamePattern);
-                System.Diagnostics.Trace.TraceError("Exception Details: {0}", typeInitializationException);
+                Console.Error.WriteLine("An error on read dacpac file: {0}/{1}", path, fileNamePattern);
+                Console.Error.WriteLine("Exception Details: {0}", typeInitializationException);
             }
             catch (Exception exception)
             {
-                System.Diagnostics.Trace.TraceError("An error on read dacpac file: {0}/{1}", path, fileNamePattern);
-                System.Diagnostics.Trace.TraceError("Exception Details: {0}", exception);
+                Console.Error.WriteLine("An error on read dacpac file: {0}/{1}", path, fileNamePattern);
+                Console.Error.WriteLine("Exception Details: {0}", exception);
             }
 
             return null;
@@ -90,7 +97,18 @@ namespace Dacpac.Tool
         /// <summary>Carrega as conexões com base nas configurações do servidor e do banco selecionado</summary>
         private void LoadConnectionStrins()
         {
-            if (_connectionIsLoad || string.IsNullOrWhiteSpace(_dataBaseNames) || string.IsNullOrWhiteSpace(Server)) return;
+
+            if (_connectionIsLoad) return;
+            if (string.IsNullOrWhiteSpace(Server))
+            {
+                Console.Error.WriteLine("The target server is requerid, send with --Server=mydb.server.mydomain.com,1433");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(_dataBaseNames))
+            {
+                Console.Error.WriteLine("The target database name is requerid, send with --databasenames=mydb");
+                return;
+            }
             foreach (var dbName in _dataBaseNames.Split(";"))
             {
                 if (UseSspi)

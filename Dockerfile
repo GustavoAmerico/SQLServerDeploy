@@ -24,13 +24,13 @@ RUN C:\Chocolatey\bin\nuget install Microsoft.Data.Tools.Msbuild -Version 10.0.6
 ENV MSBUILD_PATH="C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\MSBuild\\15.0\\Bin"
 RUN $env:PATH = $env:MSBUILD_PATH + ';' + $env:PATH; 
 RUN [Environment]::SetEnvironmentVariable('PATH', $env:PATH, [EnvironmentVariableTarget]::Machine);
-COPY 'SQLServerDeploy\\Tasks\\MSSQLDeployMultpleDeploy' '/help'
+COPY 'AzureDevOps\\SQLServerDeploy\\Tasks\\MSSQLDeployMultpleDeploy' '/help'
 
 #RUN   . /help/functions-help.ps1; TryResgisterSqlServerDac
 
 FROM base as package
 WORKDIR /src
-COPY 'SQLServerDeploy\\Tasks\\MSSQLPack' '.'
+COPY 'AzureDevOps\\SQLServerDeploy\\Tasks\\MSSQLPack' '.'
 WORKDIR /ProjectPath/
 ENTRYPOINT [ "powershell" ,  "/src/command.ps1",  "*.sqlproj",  "'/output'" ]
 
@@ -38,7 +38,7 @@ ENTRYPOINT [ "powershell" ,  "/src/command.ps1",  "*.sqlproj",  "'/output'" ]
 FROM base as deploy
 RUN mkdir '/dacpacfiles'
 WORKDIR /src
-COPY 'SQLServerDeploy\\Tasks\\MSSQLDeployMultpleDeploy' '.'
+COPY 'AzureDevOps\\SQLServerDeploy\\Tasks\\MSSQLDeployMultpleDeploy' '.'
 #RUN Intall-Package sql2017-dacframework
 RUN [System.Environment]::SetEnvironmentVariable('dacpacPattern','**/*.dacpac',  [System.EnvironmentVariableTarget]::Machine),\
 
@@ -87,4 +87,4 @@ ENTRYPOINT powershell C:\src\command-docker.ps1
 
 
 #docker build --rm -f ..\..\..\Dockerfile --target deploy -t sqlserver-deploy ..\..\..\; 
-#docker run -e 'password="NJI90okm!"'`  --rm  -v 'C:\temp:C:\dacpacfiles' sqlserver-deploy:latest
+#docker run -e 'password="123456667"'`  --rm  -v 'C:\temp:C:\dacpacfiles' sqlserver-deploy:latest

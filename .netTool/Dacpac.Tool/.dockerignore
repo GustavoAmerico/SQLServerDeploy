@@ -3,7 +3,10 @@ node_modules/
 .vscode/
 .vs/
 .git/
+bin/
+obj/
+nupkg/
 .json
 .png
 .md
-*/.vs/
+.dll

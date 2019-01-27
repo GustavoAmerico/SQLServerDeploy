@@ -4,7 +4,8 @@ queue:
   name: Hosted VS2017
 
 variables:
-  tool_version: '1.0.$(build.buildId)'
+  versionBase: '1.0'
+  tool_version: $(versionBase).$(Build.BuildId)
 
 trigger:
   branches:
@@ -16,7 +17,7 @@ trigger:
      - '.netTool/*'
      - 'azure-pipelines-dotnet-tool.yml'
      
-name: $(tool_version)
+name: $(versionBase).$(Build.BuildId)
 steps:
 - task: DotNetCoreCLI@2
   displayName: dotnet restore

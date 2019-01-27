@@ -12,7 +12,6 @@ namespace Dacpac.Tool
     {
         private static IConfiguration _configuration;
 
-        private const string EnvPrefix = "dac__";
 
 
         public const string DacDeployOptionsKey = "DacDeployOptions";
@@ -55,6 +54,12 @@ namespace Dacpac.Tool
             var dacPackageOptions = _configuration.Get<DacPackageOptions>() ??
                                     new DacPackageOptions();
 
+            var envs = _configuration.AsEnumerable().ToArray();
+            foreach (var env in envs)
+            {
+                Console.WriteLine($"{env.Key}={env.Value}");
+            }
+
             var package = dacPackageOptions.FindDacPackage();
             foreach (var connection in dacPackageOptions.Connections)
             {
@@ -91,7 +96,7 @@ namespace Dacpac.Tool
         static void ConfigurationBuild(string[] args)
         {
             _configuration = new Microsoft.Extensions.Configuration.ConfigurationBuilder()
-                  .AddEnvironmentVariables(a => { a.Prefix = EnvPrefix; })
+                  .AddEnvironmentVariables()
                   .AddCommandLine(args)
                   .Build();
 

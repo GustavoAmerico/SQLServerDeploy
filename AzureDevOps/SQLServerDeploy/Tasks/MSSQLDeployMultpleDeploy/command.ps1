@@ -37,12 +37,10 @@ param(
     [String] [Parameter(Mandatory = $False)]
     $createNewDatabase = "false"
 )
-# add-type -path "C:\Program Files (x86)\Microsoft SQL Server\120\DAC\bin\Microsoft.SqlServer.Dac.dll"
-#Load Microsoft.SqlServer.Dac assembly
-[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.Dac")
+ 
 
+. .\functions-help.ps1
+InstallDotNetCore
+dotnet tool install --global Dacpac.Tool
 
-. C:\src\functions-help.ps1  
-
-
-DeployDb($dacpacPattern, $dacpacPath, $server, $dbName, $userId, $password, $blockOnPossibleDataLoss, $verifyDeployment, $compareUsingTargetCollation , $allowIncompatiblePlatform, $commandTimeout, $createNewDatabase)
+dotnet dacpac publish --path=$dacpacPath --namePattern=$dacpacPattern --server=$server --databaseNames=$dbName --userId=$userId --password=$password --blockOnPossibleDataLoss=$blockOnPossibleDataLoss --verifyDeployment=$verifyDeployment --compareUsingTargetCollation=$compareUsingTargetCollation --allowIncompatiblePlatform=$allowIncompatiblePlatform --commandTimeout=$commandTimeout --createNewDatabase=$createNewDatabase

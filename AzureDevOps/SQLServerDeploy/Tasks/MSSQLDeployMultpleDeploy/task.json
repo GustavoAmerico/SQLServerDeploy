@@ -20,7 +20,7 @@
     "Patch": 0
   },
   "demands": [
-    "SqlServerDac"
+    "powershell"
   ],
   "author": "Gustavo Américo",
   "minimumAgentVersion": "1.89.0",

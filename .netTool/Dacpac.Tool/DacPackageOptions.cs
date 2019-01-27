@@ -31,7 +31,7 @@ namespace Dacpac.Tool
         public System.Security.SecureString Password { get; set; }
 
         /// <summary>Obtém e envia o diretorio que o dacpac está armazenado</summary>
-        public string Path { get; set; }
+        public string DacPath { get; set; }
 
         /// <summary>Obtém o endereço do servidor que a base de dados deve ser publicada</summary>
         public string Server { get; set; }
@@ -41,10 +41,12 @@ namespace Dacpac.Tool
         /// </summary>
         public bool UseSspi { get; set; } = true;
 
+        public string UserId { get; set; }
+
         /// <summary>Find by dacpac file in directory</summary>
         public Microsoft.SqlServer.Dac.DacPackage FindDacPackage()
         {
-            string path = Path, fileNamePattern = NamePattern;
+            string path = DacPath, fileNamePattern = NamePattern;
 
             // Read the arguments sended by user
             if (string.IsNullOrWhiteSpace(path))
@@ -109,7 +111,7 @@ namespace Dacpac.Tool
                 Console.Error.WriteLine("The target database name is requerid, send with --databasenames=mydb");
                 return;
             }
-            foreach (var dbName in _dataBaseNames.Split(";"))
+            foreach (var dbName in _dataBaseNames.Split(new[] { ";", "," }, StringSplitOptions.RemoveEmptyEntries))
             {
                 if (UseSspi)
                 {
@@ -118,7 +120,7 @@ namespace Dacpac.Tool
                 else if (Password.Length < 10)
                 {
                     Connections.Add(dbName,
-                        $"Data Source={Server};User Id=$ENV:userId;Password={Password};Integrated Security=False;Application Name=SqlPackageUpdate");
+                        $"Data Source={Server};User Id={UserId};Password={Password};Integrated Security=False;Application Name=SqlPackageUpdate");
                 }
             }
             _connectionIsLoad = true;

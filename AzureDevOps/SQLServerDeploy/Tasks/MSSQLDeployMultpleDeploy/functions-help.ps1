@@ -1,7 +1,7 @@
 [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.Dac");
 
 function TryResgisterSqlServerDac() {
-  [OutputType([bool])]
+    [OutputType([bool])]
     #[System.Reflection.Assembly]::Load("System.EnterpriseServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
     #$publish = New-Object System.EnterpriseServices.Internal.Publish ;
     $files = Get-ChildItem @('C:\Program Files (x86)\Microsoft SQL Server\**\Microsoft.SqlServer.Dac.dll', 'C:\Program Files (x86)\Microsoft Visual Studio\**\Microsoft.SqlServer.Dac.dll', 'C:\Microsoft.Data.Tools.Msbuild**\lib\**\Microsoft.SqlServer.Dac.dll', '**\.nuget\packages\microsoft.data.tools.msbuild\*\lib\**\Microsoft.SqlServer.Dac.dll' ) -Recurse -ErrorAction SilentlyContinue ;
@@ -181,33 +181,85 @@ function DeployDb() {
             Write-Host $FailedItem ;
             Write-Host "Error Deploy to $database"
 
-          }
+        }
     }
 
     Write-Host "Finish deploy for all database"
 }
 
 
-function Test-SQLConnection
-{    
+function Test-SQLConnection {    
     [OutputType([bool])]
     Param
     (
-        [Parameter(Mandatory=$true,
-                    ValueFromPipelineByPropertyName=$true,
-                    Position=0)]
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true,
+            Position = 0)]
         $ConnectionString
     )
-    try
-    {
+    try {
         $sqlConnection = New-Object System.Data.SqlClient.SqlConnection $ConnectionString;
         $sqlConnection.Open();
         $sqlConnection.Close();
 
         return $true;
     }
-    catch
-    {
+    catch {
         return $false;
     }
+}
+
+
+
+###########################################################################
+# INSTALL .NET CORE CLI
+###########################################################################
+
+Function Remove-PathVariable([string]$VariableToRemove) {
+    $path = [Environment]::GetEnvironmentVariable("PATH", "User")
+    if ($path -ne $null) {
+        $newItems = $path.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
+        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "User")
+    }
+
+    $path = [Environment]::GetEnvironmentVariable("PATH", "Process")
+    if ($path -ne $null) {
+        $newItems = $path.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
+        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "Process")
+    }
+}
+
+
+function InstallDotNetCore { 
+    param(
+    # Version
+    [Parameter(Mandatory=$False)]
+    [System.String]
+    $DotNetVersion = "2.2.100"
+    )
+
+     
+    $DotNetInstallerUri = "https://dot.net/v1/dotnet-install.ps1";
+ 
+    # Get .NET Core CLI path if installed.
+    $FoundDotNetCliVersion = $null;
+    if (Get-Command dotnet -ErrorAction SilentlyContinue) {
+        $FoundDotNetCliVersion = dotnet --version;
+    }
+ 
+    if ($FoundDotNetCliVersion -ne $DotNetVersion) {
+        $InstallPath = Join-Path $PSScriptRoot ".dotnet"
+        if (!(Test-Path $InstallPath)) {
+            mkdir -Force $InstallPath | Out-Null;
+        }
+        (New-Object System.Net.WebClient).DownloadFile($DotNetInstallerUri, "$InstallPath\dotnet-install.ps1");
+        & $InstallPath\dotnet-install.ps1 -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath;
+ 
+        Remove-PathVariable "$InstallPath"
+        $env:PATH = "$InstallPath;$env:PATH"
+    }
+    $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = 1
+    $env:DOTNET_CLI_TELEMETRY_OPTOUT = 1
+ 
+    
 }

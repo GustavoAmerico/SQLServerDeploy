@@ -23,6 +23,9 @@ For this task to run the "Agent" running server must have installed SQL Server D
 [Link para download](https://docs.microsoft.com/pt-br/sql/ssdt/download-sql-server-data-tools-ssdt)
 
 
+## See more
+[.Net Tool](./docs/how-use.md)
+
 ## **To collaborate:**
   
 [![logo](https://ms-vsts.gallerycdn.vsassets.io/extensions/ms-vsts/services-github/1.0.5/1479220457210/Microsoft.VisualStudio.Services.Icons.Branding)](https://github.com/GustavoAmerico/SQLServerDeploy)

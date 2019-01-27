@@ -7,9 +7,10 @@ namespace Dacpac.Tool
 {
     internal class DacPackageOptions
     {
+        private const string DefaultPassword = "IFromBrazilian";
         private bool _connectionIsLoad = false;
         private string _dataBaseNames = "";
-
+  
         public IDictionary<string, string> Connections { get; set; } = new Dictionary<string, string>();
 
         /// <summary>Lista de banco de dados que deve ser atualizada/criado</summary>
@@ -28,7 +29,7 @@ namespace Dacpac.Tool
         public string NamePattern { get; set; } = @"*.dacpac";
 
         /// <summary>Obtém e envia a senha necessária para acessar o banco de dados</summary>
-        public System.Security.SecureString Password { get; set; }
+        public String Password { get; set; } = DefaultPassword;
 
         /// <summary>Obtém e envia o diretorio que o dacpac está armazenado</summary>
         public string DacPath { get; set; }
@@ -41,7 +42,7 @@ namespace Dacpac.Tool
         /// </summary>
         public bool UseSspi { get; set; } = true;
 
-        public string UserId { get; set; }
+        public string UserId { get; set; } = "carioca";
 
         /// <summary>Find by dacpac file in directory</summary>
         public Microsoft.SqlServer.Dac.DacPackage FindDacPackage()
@@ -115,12 +116,12 @@ namespace Dacpac.Tool
             {
                 if (UseSspi)
                 {
-                    Connections.Add(dbName, $"Integrated Security=SSPI;Persist Security Info=False;Data Source={Server};Application Name=SqlPackageUpdate");
+                    Connections[dbName] = $"Integrated Security=SSPI;Persist Security Info=False;Data Source={Server};Application Name=SqlPackageUpdate";
                 }
-                else if (Password.Length < 10)
+                else if (Password.Length > 1)
                 {
-                    Connections.Add(dbName,
-                        $"Data Source={Server};User Id={UserId};Password={Password};Integrated Security=False;Application Name=SqlPackageUpdate");
+                    Connections[dbName] =
+                        $"Data Source={Server};User Id={UserId};Password={Password};Integrated Security=False;Application Name=SqlPackageUpdate";
                 }
             }
             _connectionIsLoad = true;

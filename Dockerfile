@@ -2,9 +2,8 @@
 #Autor: Gustavo Américo Gonçalves
 #Email: contato@gustavoamerico.net
 
-FROM microsoft/dotnet-framework:4.7.2-sdk as base
+FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-1803  
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
-
 
 #The Dockerfile goes on to install all the tools needed to build SSDT projects. The majority of the tools are available as Chocolatey packages, so in the Dockerfile the RUN instruction installs Chocolatey, the MSBuild tools, and the .NET 4.7.2 target package
 RUN Write-Host 'Installing chocolatey package management';
@@ -26,9 +25,6 @@ RUN $env:PATH = $env:MSBUILD_PATH + ';' + $env:PATH;
 RUN [Environment]::SetEnvironmentVariable('PATH', $env:PATH, [EnvironmentVariableTarget]::Machine);
 COPY 'AzureDevOps\\SQLServerDeploy\\Tasks\\MSSQLDeployMultpleDeploy' '/help'
 
-#RUN   . /help/functions-help.ps1; TryResgisterSqlServerDac
-
-FROM base as package
 WORKDIR /src
 COPY 'AzureDevOps\\SQLServerDeploy\\Tasks\\MSSQLPack' '.'
 WORKDIR /ProjectPath/

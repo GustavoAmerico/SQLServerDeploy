@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-- dev-docker
+- master
 
 pool:
   vmImage: 'vs2017-win2016'

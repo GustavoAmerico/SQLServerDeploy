@@ -5,10 +5,7 @@
 
 trigger:
 - master
-
-pool:
-  vmImage: 'vs2017-win2016'
-
+ 
 variables:
   imageName: 'gustavoamerico/dacpac:build-0.0.$(build.buildId)'
 

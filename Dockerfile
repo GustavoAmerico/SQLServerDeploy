@@ -28,4 +28,5 @@ COPY 'AzureDevOps\\SQLServerDeploy\\Tasks\\MSSQLDeployMultpleDeploy' '/help'
 WORKDIR /src
 COPY 'AzureDevOps\\SQLServerDeploy\\Tasks\\MSSQLPack' '.'
 WORKDIR /ProjectPath/
+VOLUME [ "/output" ]
 ENTRYPOINT [ "powershell" ,  "/src/command.ps1",  "*.sqlproj",  "'/output'" ]

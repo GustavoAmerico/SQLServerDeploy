@@ -4,7 +4,7 @@
 
 FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-1803  
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';"]
-
+VOLUME c:\\output
 #The Dockerfile goes on to install all the tools needed to build SSDT projects. The majority of the tools are available as Chocolatey packages, so in the Dockerfile the RUN instruction installs Chocolatey, the MSBuild tools, and the .NET 4.7.2 target package
 RUN Write-Host 'Installing chocolatey package management';
 RUN Install-PackageProvider -Name chocolatey -RequiredVersion 2.8.5.130 -Force; 
@@ -28,5 +28,5 @@ COPY 'AzureDevOps\\SQLServerDeploy\\Tasks\\MSSQLDeployMultpleDeploy' '/help'
 WORKDIR /src
 COPY 'AzureDevOps\\SQLServerDeploy\\Tasks\\MSSQLPack' '.'
 WORKDIR /ProjectPath/
-VOLUME [ "/output" ]
+
 ENTRYPOINT [ "powershell" ,  "/src/command.ps1",  "*.sqlproj",  "'/output'" ]

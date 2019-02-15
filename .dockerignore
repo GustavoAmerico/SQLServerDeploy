@@ -1,8 +1,10 @@
 
 node_modules/
+.netTool/
 .vscode/
 .vs/
 .git/
+docs/
 .json
 .png
 .md

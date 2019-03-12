@@ -7,7 +7,9 @@
     "public": true,
     "runsOn": [
         "Agent",
-        "DeploymentGroup"
+        "DeploymentGroup",
+        "MachineGroup",
+        "Server"
     ],
     "targets": [
         {
@@ -16,7 +18,8 @@
     ],
     "description": "Task for deployment dacpac file.",
     "categories": [
-        "Build and release"
+        "Build and release",
+        "Utility"
     ],
     "branding": {
         "color": "rgb(36, 43, 50)",
@@ -49,7 +52,8 @@
     "screenshots": [
         {
             "path": "images/screenshot_1.png"
-        },{
+        },
+        {
             "path": "images/screenshot_2.png"
         }
     ],

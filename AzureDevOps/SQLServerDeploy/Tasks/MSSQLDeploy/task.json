@@ -11,12 +11,12 @@
      "Release","Build"
   ],
   "version": {
-    "Major": 1,
-    "Minor": 4,
+    "Major": 2,
+    "Minor": 0,
     "Patch": 0
   },
   "demands": [
-    "SqlPackage"    
+    "powershell"    
   ],
   "author": "Gustavo Américo",
   "minimumAgentVersion": "1.89.0",
@@ -38,12 +38,29 @@
       "helpMarkDown": "The dacpac file path or root."
     },
     {
-      "name": "connectionString",
+      "name": "server",
       "type": "string",
-      "label": "SQL ConnectionString",
+      "label": "Domain name or IP and port",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "Server=tcp:{[database_domain_name or IP], [port]};Initial Catalog={databaseName};Persist Security Info=False;User ID={your_username};Password={your_password};MultipleActiveResultSets=True;Encrypt=True;"
+      "helpMarkDown": "The server domain name or IP and port ([database_domain_name or IP],[port]) <192.168.0.3,1433>"
+      
+    },
+    {
+      "name": "userId",
+      "type": "string",
+      "label": "SQL User",
+      "defaultValue": "sa",
+      "required": true,
+      "helpMarkDown": "The sql server user with grant access for create/alter schema"
+      },
+    {
+      "name": "password",
+      "type": "string",
+      "label": "SQL User Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "" 
     },
     {
       "name": "dbName",

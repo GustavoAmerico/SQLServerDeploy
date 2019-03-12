@@ -6,9 +6,14 @@ param(
 
     [String] [Parameter(Mandatory = $True)]
     $dacpacPath,
-
     [String] [Parameter(Mandatory = $True)]
-    $connectionString,
+    $server,
+ 
+    [String] [Parameter(Mandatory = $True)]
+    $userId,
+
+    [SecureString] [Parameter(Mandatory = $True)]
+    $password,
 
     [String] [Parameter(Mandatory = $True)]
     $dbName,
@@ -37,67 +42,28 @@ param(
     [String] [Parameter(Mandatory = $False)]
     $variablesInput = ""
 )
- add-type -path "C:\Program Files (x86)\Microsoft SQL Server\$($sqlVersion)\DAC\bin\Microsoft.SqlServer.Dac.dll"
-
- 
-if (![System.IO.Directory]::Exists($dacpacPath)) {
-    Write-Host "No directory found:" $dacpacPath;
-    return;
-}
-
-$fileName = ($dacpacPath + "\" + $dacpacPattern).Trim(); 
-Write-Host "Searching for:" $fileName
-try {
- 
-    $file = Get-ChildItem $fileName -Recurse  
-    if ($file.Length -eq 0) {
-        Throw "No files found"
-    }
-    else {
-        Write-Host "Found file: " $file
-    }
-}
-catch {
-    Write-Host "There was an error loading the file";
-    Throw;
-}
- 
-  
-#Load Microsoft.SqlServer.Dac assembly
-[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.Dac")
-
-Write-Host "Start deploy"
-$dp = [Microsoft.SqlServer.Dac.DacPackage]::Load($file);
-Write-Host "Uploaded file"
-$dacService = new-object Microsoft.SqlServer.Dac.DacServices($connectionString);
-Write-Host "Connected to server" 
 
 Write-Host "Preparing Publishing Variables"
-$option = new-object Microsoft.SqlServer.Dac.DacDeployOptions 
-$option.BlockOnPossibleDataLoss = [System.Convert]::ToBoolean($blockOnPossibleDataLoss.Trim());
-$option.CompareUsingTargetCollation = [System.Convert]::ToBoolean( $compareUsingTargetCollation.Trim());
-$option.AllowIncompatiblePlatform = [System.Convert]::ToBoolean( $allowIncompatiblePlatform.Trim());
-$option.VerifyDeployment = [System.Convert]::ToBoolean($verifyDeployment.Trim());
-$option.CreateNewDatabase =  [System.Convert]::ToBoolean($createNewDatabase.Trim());
-$option.CommandTimeout = [System.Convert]::ToInt32($commandTimeout);
 $Variables = ConvertFrom-StringData -StringData $variablesInput
 foreach($VariableKey in $Variables.Keys)
 {
-    $option.SqlCommandVariableValues.Add($VariableKey, $Variables[$VariableKey])
+     [Environment]::SetEnvironmentVariable($VariableKey, $Variables[$VariableKey], "User");
+     Write-Host $Variables[$VariableKey];
 }
-
-Write-Host [System.String]::Format("CreateNewDatabase:{0}",$option.CreateNewDatabase);
-Write-Host [System.String]::Format("CommandTimeout: {0}",$option.CommandTimeout);
-Write-Host [System.String]::Format("BlockOnPossibleDataLoss:{0}",$option.BlockOnPossibleDataLoss);
-Write-Host [System.String]::Format("AllowIncompatiblePlatform:{0}",$option.AllowIncompatiblePlatform);
-Write-Host [System.String]::Format("CompareUsingTargetCollation:{0}",$option.CompareUsingTargetCollation);
-Write-Host [System.String]::Format("VerifyDeployment:{0}",$option.VerifyDeployment);
-Write-Host [System.String]::Format("sqlVersion:{0}",$sqlVersion);
-Write-Host "`$Variables"
-Write-Host $Variables
-
  
-$dacService.Deploy($dp, $dbName, "True", $option)
-Write-Host "Finish Deploy"
+Write-Host 'Install the dotnet core 2.1 for use dotnet tool feature';
+. ..\Install-Dotnet-Core.ps1
+InstallDotNetCore
+
+Write-Host 'Install the dotnet tool feature for deploy .dacpac';
+dotnet tool install --global Dacpac.Tool
 
 
+Write-Host "Start deployment";
+
+dotnet dacpac publish --path=$dacpacPath --namePattern=$dacpacPattern  --databaseNames=$dbName --blockOnPossibleDataLoss=$blockOnPossibleDataLoss 
+ --verifyDeployment=$verifyDeployment --compareUsingTargetCollation=$compareUsingTargetCollation --allowIncompatiblePlatform=$allowIncompatiblePlatform --commandTimeout=$commandTimeout --createNewDatabase=$createNewDatabase
+
+
+
+Write-Host "Finish Deploy";

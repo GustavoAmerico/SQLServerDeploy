@@ -10,8 +10,7 @@ variables:
 trigger:
   branches:
     include:
-     - master
-     - release
+     - master 
   paths:
     include:
      - '.netTool/*'

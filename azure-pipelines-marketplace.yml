@@ -1,7 +1,5 @@
 resources:
   - repo: self
-pool:
-  demands: npm
 
 variables:
   version: 2.0.0.$(Build.BuildId)

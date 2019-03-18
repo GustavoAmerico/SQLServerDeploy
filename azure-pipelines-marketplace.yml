@@ -31,7 +31,7 @@ steps:
       arguments: "install vss-web-extension-sdk --save"
       workingFolder: AzureDevOps
 
-  - task: geeklearningio.gl-vsts-tasks-file-patch.json-patch-task.JsonPatch@1
+  - task: geeklearningio.gl-vsts-tasks-file-patch.json-patch-task.JsonPatch@3
     displayName: "Update Version"
     inputs:
       SyntaxType: slick

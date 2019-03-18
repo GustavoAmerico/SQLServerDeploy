@@ -1,0 +1,58 @@
+pool:
+  vmImage: Hosted
+  demands: npm
+
+variables:
+  version: 2.0.0.$(Build.BuildId)
+
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - "AzureDevOps"
+      - "azure-pipelines-marketplace.yml"
+
+name: 2.0.0.$(Build.BuildId)
+steps:
+  - task: CmdLine@1
+    displayName: "NPM Install tfx-cli"
+    inputs:
+      filename: npm
+      arguments: "install tfx-cli -g"
+
+  - task: Npm@1
+    displayName: "npm install"
+    inputs:
+      workingDir: AzureDevOps
+      verbose: false
+
+  - task: CmdLine@1
+    displayName: "NPM Install vss-web-extension-sdk"
+    inputs:
+      filename: npm
+      arguments: "install vss-web-extension-sdk --save"
+      workingFolder: AzureDevOps
+
+  - task: geeklearningio.gl-vsts-tasks-file-patch.json-patch-task.JsonPatch@1
+    displayName: "Update Version"
+    inputs:
+      SyntaxType: slick
+      JsonWorkingDir: AzureDevOps/SQLServerDeploy
+      JsonTargetFilters: "vss-extension.json"
+      JsonPatchContent: '= /version => "$(version)"'
+      OutputPatchFile: true
+      UseJson5: true
+      FailIfNoPatchApplied: true
+      SkipErrors: true
+
+  - task: CmdLine@1
+    displayName: "Run tfx"
+    inputs:
+      filename: tfx
+      arguments: "extension create --manifest-globs vss-extension.json --output-path $(Build.ArtifactStagingDirectory)"
+      workingFolder: AzureDevOps/SQLServerDeploy
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish Artifact: drop"

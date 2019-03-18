@@ -18,8 +18,7 @@
     ],
     "description": "Task for deployment dacpac file.",
     "categories": [
-        "Build and release",
-        "Utility"
+        "Azure Pipelines"
     ],
     "branding": {
         "color": "rgb(36, 43, 50)",
@@ -79,7 +78,7 @@
     "contributions": [
         {
             "id": "gustavoamerico",
-            "name": "Deploy SQL Schema",
+            "name": "Deploy SQL Schema for one database",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"

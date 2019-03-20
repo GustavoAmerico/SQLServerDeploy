@@ -7,13 +7,17 @@
   "description": "Publish a dacpac file in especific database connection string",
   "helpMarkDown": "",
   "category": "Deploy",
+  "runsOn": [
+    "Agent",
+    "MachineGroup"
+  ],
   "visibility": [
      "Release","Build"
   ],
   "version": {
     "Major": 2,
     "Minor": 0,
-    "Patch": 0
+    "Patch": 1
   },
   "demands": [
     "powershell"    
@@ -64,8 +68,8 @@
     },
     {
       "name": "dbName",
-      "type": "string",
-      "label": "Database name",
+      "type": "multiLine",
+      "label": "name of the database separated by (;)",
       "defaultValue": "",
       "helpMarkDown": "The database name for publish package",
       "required": true
@@ -82,6 +86,7 @@
       "name": "blockOnPossibleDataLoss",
       "type": "boolean",
       "label": "Block On possible data loss",
+      "defaultValue": "true",
       "required": false,
       "helpMarkDown": "specifies whether deployment should stop if the operation could cause data loss."
     },

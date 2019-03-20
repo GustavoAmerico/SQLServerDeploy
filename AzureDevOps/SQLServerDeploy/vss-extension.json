@@ -43,11 +43,7 @@
         {
             "path": "Tasks/MSSQLPack/",
             "addressable": true
-        },
-        {
-            "path": "Tasks/MSSQLDeployMultpleDeploy",
-            "addressable": true
-        }
+        } 
     ],
     "screenshots": [
         {
@@ -99,18 +95,6 @@
             "properties": {
                 "name": "Tasks/MSSQLPack",
                 "icon": "Tasks/MSSQLPack/icon.png"
-            }
-        },
-        {
-            "id": "SQLServerDeployMultiDatabase",
-            "name": "Deploy SQL Schema for multiple database in server",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "Tasks/MSSQLDeployMultpleDeploy",
-                "icon": "Tasks/MSSQLDeployMultpleDeploy/icon.png"
             }
         }
     ],

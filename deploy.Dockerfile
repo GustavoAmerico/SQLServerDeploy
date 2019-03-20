@@ -1,8 +1,7 @@
 FROM microsoft/dotnet:2.2-sdk
 VOLUME [ "/dacpacfiles" ]
 WORKDIR /dacpacfiles
-#COPY 'AzureDevOps/SQLServerDeploy/Tasks/MSSQLDeployMultpleDeploy' '.'
-
+ 
 #ENV DOTNET_CLI_HOME=/var/cache
 
 #RUN Intall-Package sql2017-dacframework

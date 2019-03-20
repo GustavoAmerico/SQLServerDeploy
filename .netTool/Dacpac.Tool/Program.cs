@@ -55,10 +55,12 @@ namespace Dacpac.Tool
                                     new DacPackageOptions();
 
             var envs = _configuration.AsEnumerable().ToArray();
+          #if DEBUG
             foreach (var env in envs)
             {
                 Console.WriteLine($"{env.Key}={env.Value}");
             }
+            #endif
 
             var package = dacPackageOptions.FindDacPackage();
             foreach (var connection in dacPackageOptions.Connections)

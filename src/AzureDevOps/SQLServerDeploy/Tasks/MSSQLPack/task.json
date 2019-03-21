@@ -9,9 +9,9 @@
   "category": "Build",
   "visibility": ["Build","Release" ],
   "version": {
-    "Major": 0,
-    "Minor": 4,
-    "Patch": 0
+    "Major": 2,
+    "Minor": 0,
+    "Patch": 2
   },
   "demands": [
     "SqlPackage",

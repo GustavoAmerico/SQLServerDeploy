@@ -1,3 +1,13 @@
+﻿[CmdletBinding(DefaultParameterSetName = 'None')]
+param(
+    [String] [Parameter(Mandatory = $True)] [string]
+    $filePattern ,
+    [String] [Parameter(Mandatory = $True)] [string]
+    $output, 
+    [String][Parameter(Mandatory = $False)] [string]
+    $path = '.\'
+)
+
 [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.Dac");
 
 function TryResgisterSqlServerDac() {
@@ -118,75 +128,7 @@ function  CreateDacDeployOptions() {
 
 }
 
-
-function DeployDb() {
-    param(       
-        [Parameter(Mandatory = $False)]
-        $dacpacPattern = "**\*.dacpac",
-
-        [Parameter(Mandatory = $True)]
-        $dacpacPath,
-
-        [String] [Parameter(Mandatory = $True)]
-        $server,
-
-        [String] [Parameter(Mandatory = $True)]
-        $dbName,
-    
-        [String] [Parameter(Mandatory = $True)]
-        $userId,
-
-        [String] [Parameter(Mandatory = $True)]
-        $password,
-
-        [String] [Parameter(Mandatory = $False)]
-        $blockOnPossibleDataLoss = "false",
-
-        [String] [Parameter(Mandatory = $False)]
-        $verifyDeployment = "true",
-
-        [String] [Parameter(Mandatory = $False)]
-        $compareUsingTargetCollation = "true",
-
-        [String] [Parameter(Mandatory = $False)]
-        $allowIncompatiblePlatform = "true",
-
-        [String][Parameter(Mandatory = $True)]
-        $commandTimeout = "7200",
-
-        [String] [Parameter(Mandatory = $False)]
-        $createNewDatabase = "false"
-    )
-
-    #$server, $userId, $password,
-    $allDatabases = GetDatabaseList( $dbName);
-    $dacPack = GetDacPackage( $dacpacPattern, $dacpacPath);
-    $option = CreateDacDeployOptions($blockOnPossibleDataLoss, $verifyDeployment, $compareUsingTargetCollation , $allowIncompatiblePlatform, $commandTimeout, $createNewDatabase) ;
-    Write-Host "Start deploy file"
-
-    foreach ($database in $allDatabases) {
-        try {
-            $connectionString = [System.Linq.Enumerable]::Select($allDatabases, ($database = > [System.String]::Format("Server=tcp:{0};Initial Catalog={3};Persist Security Info=False;User ID={1};Password={2};MultipleActiveResultSets=True;Encrypt=True;", $server.Trim(), $userId, $password, $database.Trim())));
-            Write-Host "Try deploy in $database"
-    
-            $dacService = new-object Microsoft.SqlServer.Dac.DacServices($connectionString);
-            $dacService.Deploy($dacPack, $database, "True", $option)
-            Write-Host "Finish Deploy to $database";
-        }
-        catch {
-            
-            $ErrorMessage = $_.Exception.Message
-            $FailedItem = $_.Exception.ItemName
-            Write-Host  $ErrorMessage;
-            Write-Host $FailedItem ;
-            Write-Host "Error Deploy to $database"
-
-        }
-    }
-
-    Write-Host "Finish deploy for all database"
-}
-
+ 
 
 function Test-SQLConnection {    
     [OutputType([bool])]
@@ -211,55 +153,79 @@ function Test-SQLConnection {
 
 
 
-###########################################################################
-# INSTALL .NET CORE CLI
-###########################################################################
 
-Function Remove-PathVariable([string]$VariableToRemove) {
-    $path = [Environment]::GetEnvironmentVariable("PATH", "User")
-    if ($path -ne $null) {
-        $newItems = $path.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
-        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "User")
+function Resolve-MsBuild {
+    $msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue
+    if ($msb2017) {
+        Write-Information "Found MSBuild 2017 (or later)."
+        Write-Host $msb2017
+        return $msb2017
     }
 
-    $path = [Environment]::GetEnvironmentVariable("PATH", "Process")
-    if ($path -ne $null) {
-        $newItems = $path.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
-        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "Process")
+    $msBuild2015 = "${env:ProgramFiles(x86)}\MSBuild\14.0\bin\msbuild.exe"
+
+    if (-not (Test-Path $msBuild2015)) {
+        throw 'Could not find MSBuild 2015 or later.'
     }
+
+    Write-Information "Found MSBuild 2015."
+    Write-Host $msBuild2015
+
+    return $msBuild2015
 }
 
+function Install-Dependency { 
+    Write-Information 'Installing SQL Server Data Tools from nuget'
+    nuget.exe install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210
+}
 
-function InstallDotNetCore { 
-    param(
-    # Version
-    [Parameter(Mandatory=$False)]
-    [System.String]
-    $DotNetVersion = "2.2.100"
-    )
+function BuildSqlProject {
+    param([String] [Parameter(Mandatory = $True)] $file, [String] [Parameter(Mandatory = $False)] $outDir)
+    $nugetPath = ($env:userprofile + '\.nuget\packages\microsoft.data.tools.msbuild\10.0.61804.210\lib\net46');
 
-     
-    $DotNetInstallerUri = "https://dot.net/v1/dotnet-install.ps1";
- 
-    # Get .NET Core CLI path if installed.
-    $FoundDotNetCliVersion = $null;
-    if (Get-Command dotnet -ErrorAction SilentlyContinue) {
-        $FoundDotNetCliVersion = dotnet --version;
+    $msbuild = Resolve-MsBuild
+
+
+    $msbuildArgs = @{ 
+        performanceParameters = "/nologo", "/p:WarningLevel=4", "/clp:Summary", "/m:1"
+        loggingParameters     = "/l:FileLogger,Microsoft.Build.Engine;logfile=$outDir\logdb.txt"
+        packageParameters     = , "/property:outdir=$outDir", "/p:configuration=release", "/p:SQLDBExtensionsRefPath=$nugetPath", "/p:SqlServerRedistPath=$nugetPath"
+        targets               = "/t:rebuild"
     }
- 
-    if ($FoundDotNetCliVersion -ne $DotNetVersion) {
-        $InstallPath = Join-Path $PSScriptRoot ".dotnet"
-        if (!(Test-Path $InstallPath)) {
-            mkdir -Force $InstallPath | Out-Null;
-        }
-        (New-Object System.Net.WebClient).DownloadFile($DotNetInstallerUri, "$InstallPath\dotnet-install.ps1");
-        & $InstallPath\dotnet-install.ps1 -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath;
- 
-        Remove-PathVariable "$InstallPath"
-        $env:PATH = "$InstallPath;$env:PATH"
-    }
-    $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = 1
-    $env:DOTNET_CLI_TELEMETRY_OPTOUT = 1
- 
     
+    & $msbuild  $file `
+        $msbuildArgs.performanceParameters `
+        $msbuildArgs.packageParameters `
+        $msbuildArgs.loggingParameters `
+        $msbuildArgs.targets
+
+    Write-Information ('O Arquivo foi publicado em ' + $outDir)
 }
+
+ 
+try {
+
+    $fileName = ($filePattern).Trim(); 
+    Write-Information "Searching for:" $fileName
+
+    $files = Get-ChildItem $fileName -Recurse -File -Path $path | % {$_}
+    if ($files.Length -eq 0) {
+        Throw "No files found"
+    }
+    else {
+        Install-Dependency;
+
+        foreach ($file in $files) {
+            Write-Information "Found file: " $file
+            $outDir = New-Item -ItemType Directory -Force -Path $output -Name $file.BaseName | % {$_.FullName}
+            BuildSqlProject $file.FullName $outDir;
+        }
+    }
+}
+catch {
+    Write-Information "There was an error loading the file";
+    Throw;
+}
+
+
+

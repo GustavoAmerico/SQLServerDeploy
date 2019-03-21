@@ -1,25 +1,54 @@
-# Docker image
-# Build a Docker image to deploy, run, or push to a container registry.
-# Add steps that use Docker Compose, tag images, push to a registry, run an image, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+variables:
+  version: 2.0.0.$(Build.BuildId)
 
 trigger:
-- master
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - "src/AzureDevOps/SQLServerDeploy"
+      - "azure-pipelines-marketplace.yml"
 
-pool:
-  vmImage: 'vs2017-win2016'
-
-variables:
-  imageName: 'gustavoamerico/dacpac:build-0.0.$(build.buildId)'
-
+name: 2.0.0.$(Build.BuildId)
 steps:
-- script: docker build -f Dockerfile -t $(imageName) .
-  displayName: 'docker build'
+  - task: CmdLine@1
+    displayName: "NPM Install tfx-cli"
+    inputs:
+      filename: npm
+      arguments: "install tfx-cli -g"
 
-- task: Docker@1
-  displayName: 'Push an image'
-  inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: Docker-hub
-    command: 'push an Image'
-    imageName: '$(imageName)'
+  - task: Npm@1
+    displayName: "npm install"
+    inputs:
+      workingDir: AzureDevOps
+      verbose: false
+
+  - task: CmdLine@1
+    displayName: "NPM Install vss-web-extension-sdk"
+    inputs:
+      filename: npm
+      arguments: "install vss-web-extension-sdk --save"
+      workingFolder: AzureDevOps
+
+  - task: geeklearningio.gl-vsts-tasks-file-patch.json-patch-task.JsonPatch@3
+    displayName: "Update Version"
+    inputs:
+      SyntaxType: slick
+      JsonWorkingDir: AzureDevOps/SQLServerDeploy
+      JsonTargetFilters: "vss-extension.json"
+      JsonPatchContent: '= /version => "$(version)"'
+      OutputPatchFile: true
+      UseJson5: true
+      FailIfNoPatchApplied: true
+      SkipErrors: true
+
+  - task: CmdLine@1
+    displayName: "Run tfx"
+    inputs:
+      filename: tfx
+      arguments: "extension create --manifest-globs vss-extension.json --output-path $(Build.ArtifactStagingDirectory)"
+      workingFolder: AzureDevOps/SQLServerDeploy
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish Artifact: drop"

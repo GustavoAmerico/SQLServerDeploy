@@ -56,7 +56,9 @@
         "msdeploy",
         "webdeploy",
         "sqldeploy",
-        "sqlserver"
+        "sqlserver",
+        "dacpac",
+        "sqlPackage"
     ],
     "content": {
         "details": {
@@ -74,7 +76,7 @@
     "contributions": [
         {
             "id": "gustavoamerico",
-            "name": "Deploy SQL Schema for one database",
+            "name": "Deploy SQL Schema for database",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"

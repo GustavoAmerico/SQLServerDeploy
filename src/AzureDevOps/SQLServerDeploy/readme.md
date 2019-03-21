@@ -1,4 +1,4 @@
-![Badge](https://opensource-gag.vsrm.visualstudio.com/_apis/public/Release/badge/d3f0baad-0ba9-4d85-8676-a331fd4094cb/2/2)
+﻿![Badge](https://opensource-gag.vsrm.visualstudio.com/_apis/public/Release/badge/d3f0baad-0ba9-4d85-8676-a331fd4094cb/2/2)
 
 [![Build Status](https://opensource-gag.visualstudio.com/Visual%20Studio%20Marketplace/_apis/build/status/SQL%20Server%20Dacpac%20Tool%20-%20Continuous%20Delivery?branchName=master)](https://opensource-gag.visualstudio.com/Visual%20Studio%20Marketplace/_build/latest?definitionId=6&branchName=master)
 

@@ -60,7 +60,7 @@ function Install-DotNet-Dacpac {
      }
      else {
          
-         Write-Host 'Install the dotnet tool feature for deploy .dacpac';
+         Write-Host 'Installing the dotnet tool feature for deploy .dacpac';
         &$dotnet tool install --global Dacpac.Tool 
      }
      return Get-Command dotnet-dacpac.exe;

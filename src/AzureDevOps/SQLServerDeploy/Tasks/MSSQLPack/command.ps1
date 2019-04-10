@@ -157,7 +157,7 @@ function Test-SQLConnection {
 function Resolve-MsBuild {
     $msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue
     if ($msb2017) {
-        Write-Information "Found MSBuild 2017 (or later)."
+        Write-Host "Found MSBuild 2017 (or later)."
         Write-Host $msb2017
         return $msb2017
     }
@@ -168,14 +168,14 @@ function Resolve-MsBuild {
         throw 'Could not find MSBuild 2015 or later.'
     }
 
-    Write-Information "Found MSBuild 2015."
+    Write-Host "Found MSBuild 2015."
     Write-Host $msBuild2015
 
     return $msBuild2015
 }
 
 function Install-Dependency { 
-    Write-Information 'Installing SQL Server Data Tools from nuget'
+    Write-Host 'Installing SQL Server Data Tools from nuget'
     nuget.exe install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210
 }
 
@@ -199,14 +199,14 @@ function BuildSqlProject {
         $msbuildArgs.loggingParameters `
         $msbuildArgs.targets
 
-    Write-Information ('O Arquivo foi publicado em ' + $outDir)
+    Write-Host ('O Arquivo foi publicado em ' + $outDir)
 }
 
  
 try {
 
     $fileName = ($filePattern).Trim(); 
-    Write-Information "Searching for:" $fileName
+    Write-Host "Searching for:" $fileName
 
     $files = Get-ChildItem $fileName -Recurse -File -Path $path | % {$_}
     if ($files.Length -eq 0) {
@@ -216,14 +216,14 @@ try {
         Install-Dependency;
 
         foreach ($file in $files) {
-            Write-Information "Found file: " $file
+            Write-Host "Found file: " $file
             $outDir = New-Item -ItemType Directory -Force -Path $output -Name $file.BaseName | % {$_.FullName}
             BuildSqlProject $file.FullName $outDir;
         }
     }
 }
 catch {
-    Write-Information "There was an error loading the file";
+    Write-Host "There was an error loading the file";
     Throw;
 }
 

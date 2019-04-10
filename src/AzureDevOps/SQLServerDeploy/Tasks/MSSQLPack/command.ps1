@@ -38,8 +38,14 @@ function Install-Dependency {
     if (Get-Command nuget.exe -ErrorAction SilentlyContinue) {
     Write-Host 'Installing SQL Server Data Tools from nuget'
     &nuget.exe install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210
-     }else{
-        Write-Error 'Your need install the nuget cli and add path in Enviroment variable'
+     }else{     
+        $sourceNugetExe = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+        Write-Host "The nuget command line not found. We will download from $sourceNugetExe"        
+        $targetNugetExe = ($MyInvocation.MyCommand.Source + "\nuget.exe")
+        Invoke-WebRequest $sourceNugetExe -OutFile $targetNugetExe
+        Set-Alias nuget $targetNugetExe -Scope Global -Verbose
+        Write-Host "The nuget was downloaded in $targetNugetExe"
+        #Write-Error 'Your need install the nuget cli and add path in Enviroment variable'
     }
 }
 

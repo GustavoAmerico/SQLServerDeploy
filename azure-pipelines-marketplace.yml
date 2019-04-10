@@ -21,7 +21,7 @@ steps:
   - task: Npm@1
     displayName: "npm install"
     inputs:
-      workingDir: AzureDevOps
+      workingDir: src/AzureDevOps
       verbose: false
 
   - task: CmdLine@1
@@ -29,13 +29,13 @@ steps:
     inputs:
       filename: npm
       arguments: "install vss-web-extension-sdk --save"
-      workingFolder: AzureDevOps
+      workingFolder: src/AzureDevOps
 
   - task: geeklearningio.gl-vsts-tasks-file-patch.json-patch-task.JsonPatch@3
     displayName: "Update Version"
     inputs:
       SyntaxType: slick
-      JsonWorkingDir: AzureDevOps/SQLServerDeploy
+      JsonWorkingDir: src/AzureDevOps/SQLServerDeploy
       JsonTargetFilters: "vss-extension.json"
       JsonPatchContent: '= /version => "$(version)"'
       OutputPatchFile: true
@@ -48,7 +48,7 @@ steps:
     inputs:
       filename: tfx
       arguments: "extension create --manifest-globs vss-extension.json --output-path $(Build.ArtifactStagingDirectory)"
-      workingFolder: AzureDevOps/SQLServerDeploy
+      workingFolder: src/AzureDevOps/SQLServerDeploy
 
   - task: PublishBuildArtifacts@1
     displayName: "Publish Artifact: drop"

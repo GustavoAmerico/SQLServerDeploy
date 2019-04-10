@@ -9,152 +9,11 @@ param(
 )
 
 [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.Dac");
-
-function TryResgisterSqlServerDac() {
-    [OutputType([bool])]
-    #[System.Reflection.Assembly]::Load("System.EnterpriseServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
-    #$publish = New-Object System.EnterpriseServices.Internal.Publish ;
-    $files = Get-ChildItem @('C:\Program Files (x86)\Microsoft SQL Server\**\Microsoft.SqlServer.Dac.dll', 'C:\Program Files (x86)\Microsoft Visual Studio\**\Microsoft.SqlServer.Dac.dll', 'C:\Microsoft.Data.Tools.Msbuild**\lib\**\Microsoft.SqlServer.Dac.dll', '**\.nuget\packages\microsoft.data.tools.msbuild\*\lib\**\Microsoft.SqlServer.Dac.dll' ) -Recurse -ErrorAction SilentlyContinue ;
-    $dllIsRegister = $False;
-    ForEach ($file in  $files) { 
-        Write-Host ('Try register dll ' + $file.FullName);
-        #$publish.GacInstall($file.FullName);
-        # [System.Reflection.Assembly]::LoadFile($file.FullName)
-        add-type -path $file.FullName
-        $dllIsRegister = $True;
-    } 
-     
-    return $dllIsRegister;
-}   
-
-function GetDatabaseList() {
-    param(   
-        [String] [Parameter(Mandatory = $True )]
-        $dbName     
-    )
-
-    if ([string]::IsNullOrEmpty($dbName)) {
-        Write-Error "The database name not can be null";
-        return null;
-    }
-
-    $allDatabases = $dbName.Split(';');
-    if ($allDatabases.Length -eq 0) {
-        Throw "Without database selected";
-    }
-    else {
-        Write-Host "Total database:  " $allDatabases.Length; 
-        
-    }
-    return $allDatabases;
-}
-
-function GetDacPackage() {
-    param(    
-        [String] [Parameter(Mandatory = $True)]
-        $dacpacPattern,
-
-        [String] [Parameter(Mandatory = $True)]
-        $dacpacPath  
-    )
-    if (![System.IO.Directory]::Exists($dacpacPath)) {
-        Write-Host "No directory found:" $dacpacPath;
-        return;
-    }
-    
-    $fileName = ($dacpacPath + "\" + $dacpacPattern).Trim(); 
-    Write-Host "Searching for:" $fileName
-    try {
-     
-        $file = Get-ChildItem $fileName -Recurse  
-        if ($file.Length -eq 0) {
-            Throw "No files found"
-        }
-        else {
-            Write-Host "Found file: " $file;
-            TryResgisterSqlServerDac
-
-        }
-    }
-    catch {
-        Write-Host "There was an error loading the file";
-        Throw;
-    }    
-    #Essa virgula serve para o powershell não retorna um array de objeto 
-    return [Microsoft.SqlServer.Dac.DacPackage]::Load($file);
-     
-}
  
-function  CreateDacDeployOptions() {
-    [OutputType([Microsoft.SqlServer.Dac.DacDeployOptions])]
-    param(    
-        [String] [Parameter(Mandatory = $False)]
-        $blockOnPossibleDataLoss = "false",
-    
-        [String] [Parameter(Mandatory = $False)]
-        $verifyDeployment = "true",
-    
-        [String] [Parameter(Mandatory = $False)]
-        $compareUsingTargetCollation = "true",
-    
-        [String] [Parameter(Mandatory = $False)]
-        $allowIncompatiblePlatform = "true",
-    
-        [Int32][Parameter(Mandatory = $true)]
-        $commandTimeout = 7200,
-    
-        [String] [Parameter(Mandatory = $False)]
-        $createNewDatabase = "false"
-    )
-    [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.Dac")
-    Write-Host "Preparing Publishing Variables"
-    $option = new-object Microsoft.SqlServer.Dac.DacDeployOptions 
-    $option.CommandTimeout = 7200; 
-    $option.BlockOnPossibleDataLoss = [System.Convert]::ToBoolean($blockOnPossibleDataLoss.Trim());
-    $option.CompareUsingTargetCollation = [System.Convert]::ToBoolean( $compareUsingTargetCollation.Trim());
-    
-    $option.AllowIncompatiblePlatform = [System.Convert]::ToBoolean( $allowIncompatiblePlatform.Trim());
-    $option.VerifyDeployment = [System.Convert]::ToBoolean($verifyDeployment.Trim());
-    $option.CreateNewDatabase = [System.Convert]::ToBoolean($createNewDatabase.Trim());
-    $option.CommandTimeout = [System.Convert]::ToInt32($commandTimeout);
-    Write-Host ([System.String]::Format("CreateNewDatabase:{0}", $option.CreateNewDatabase)) -NoNewline;
-    Write-Host ([System.String]::Format("CommandTimeout: {0}", $option.CommandTimeout)) -NoNewline;
-    Write-Host ([System.String]::Format("BlockOnPossibleDataLoss:{0}", $option.BlockOnPossibleDataLoss)) -NoNewline;
-    Write-Host ([System.String]::Format("AllowIncompatiblePlatform:{0}", $option.AllowIncompatiblePlatform)) -NoNewline;
-    Write-Host ([System.String]::Format("CompareUsingTargetCollation:{0}", $option.CompareUsingTargetCollation)) -NoNewline;
-    Write-Host ([System.String]::Format("VerifyDeployment:{0}", $option.VerifyDeployment)) -NoNewline;
-    #Essa virgula serve para o powershell não retorna um array de objeto 
-    return $option;    
-
-}
-
- 
-
-function Test-SQLConnection {    
-    [OutputType([bool])]
-    Param
-    (
-        [Parameter(Mandatory = $true,
-            ValueFromPipelineByPropertyName = $true,
-            Position = 0)]
-        $ConnectionString
-    )
-    try {
-        $sqlConnection = New-Object System.Data.SqlClient.SqlConnection $ConnectionString;
-        $sqlConnection.Open();
-        $sqlConnection.Close();
-
-        return $true;
-    }
-    catch {
-        return $false;
-    }
-}
-
-
 
 
 function Resolve-MsBuild {
+    Write-Host 'Searching by msbuild'
     $msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue
     if ($msb2017) {
         Write-Host "Found MSBuild 2017 (or later)."
@@ -175,8 +34,13 @@ function Resolve-MsBuild {
 }
 
 function Install-Dependency { 
+    
+    if (Get-Command nuget.exe -ErrorAction SilentlyContinue) {
     Write-Host 'Installing SQL Server Data Tools from nuget'
-    nuget.exe install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210
+    &nuget.exe install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210
+     }else{
+        Write-Error 'Your need install the nuget cli and add path in Enviroment variable'
+    }
 }
 
 function BuildSqlProject {
@@ -206,13 +70,22 @@ function BuildSqlProject {
 try {
 
     $fileName = ($filePattern).Trim(); 
-    Write-Host "Searching for:" $fileName
+    if([System.String]::IsNullOrEmpty($fileName)){
+        $fileName='*.sqlproj';   
+    }
+    if([System.String]::IsNullOrEmpty($path)){
+            $path=$(pwd);   
+        }
+        
+
+    Write-Host ("Searching for: $fileName")
 
     $files = Get-ChildItem $fileName -Recurse -File -Path $path | % {$_}
     if ($files.Length -eq 0) {
         Throw "No files found"
     }
     else {
+        Write-Host ("The project was found")
         Install-Dependency;
 
         foreach ($file in $files) {

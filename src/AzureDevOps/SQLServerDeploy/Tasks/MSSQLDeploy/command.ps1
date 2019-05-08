@@ -1,4 +1,6 @@
-﻿###########################################################################
+﻿
+
+###########################################################################
 # INSTALL .NET CORE CLI
 ###########################################################################
  
@@ -67,7 +69,7 @@ function Install-DotNet-Dacpac {
  }
 
 
-[CmdletBinding(DefaultParameterSetName = 'None')]
+function Run-Publish{
 param(
 
     [String] [Parameter(Mandatory = $True)]
@@ -88,25 +90,25 @@ param(
     $dbName,
 
     [String] [Parameter(Mandatory = $False)]
-    $blockOnPossibleDataLoss = "false",
+    $blockOnPossibleDataLoss = $False,
 
     [String] [Parameter(Mandatory = $False)]
-    $verifyDeployment = "true",
+    $verifyDeployment = $True,
 
     [String] [Parameter(Mandatory = $False)]
-    $compareUsingTargetCollation = "true",
+    $compareUsingTargetCollation = $True,
 
     [String] [Parameter(Mandatory = $False)]
-    $allowIncompatiblePlatform = "true",
+    $allowIncompatiblePlatform = $True,
 
     [Int32][Parameter(Mandatory = $true)]
     $commandTimeout = 7200,
 
     [String] [Parameter(Mandatory = $False)]
-    $createNewDatabase = "false",
+    $createNewDatabase = $False,
 
     [String] [Parameter(Mandatory = $False)]
-    $sqlVersion = "120",
+    $sqlVersion = "140",
 
     [String] [Parameter(Mandatory = $False)]
     $variablesInput = ""
@@ -135,3 +137,7 @@ Write-Host 'Start publish database'
 &$dacpac publish --DacPath=$dacpacPath --server=$server --namePattern=$dacpacPattern  --databaseNames=$dbName --blockOnPossibleDataLoss=$blockOnPossibleDataLoss --verifyDeployment=$verifyDeployment --compareUsingTargetCollation=$compareUsingTargetCollation --allowIncompatiblePlatform=$allowIncompatiblePlatform --commandTimeout=$commandTimeout --createNewDatabase=$createNewDatabase
 
 Set-Location $currentPath  
+
+}
+
+&Run-Publish

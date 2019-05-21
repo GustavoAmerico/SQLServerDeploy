@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[Tenants]
+(
+	[Id] INT NOT NULL PRIMARY KEY, 
+    [Nome] NVARCHAR(150) NOT NULL, 
+    [IsEnabled] BIT NOT NULL DEFAULT 1
+)

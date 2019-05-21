@@ -17,8 +17,8 @@ function Resolve-MsBuild {
     $msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue | % { $_.Path }
     if ($msb2017) {
         Write-Host "Found MSBuild 2017 (or later)."
-        Write-Host $msb2017[0]
-        return  (Get-Command $msb2017[0] -ErrorAction SilentlyContinue  )
+        Write-Host $msb2017
+        return  (Get-Command $msb2017 )
     }
 
     $msBuild2015 = "${env:ProgramFiles(x86)}\MSBuild\14.0\bin\msbuild.exe" 
@@ -42,10 +42,13 @@ function Install-Dependency {
     else {     
         $sourceNugetExe = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
         Write-Host "The nuget command line not found. We will download from $sourceNugetExe"        
-        $targetNugetExe = ($MyInvocation.MyCommand.Source + "\nuget.exe")
+        $targetNugetExe = ($ENV:LOCALAPPDATA + "\nuget.exe")
         Invoke-WebRequest $sourceNugetExe -OutFile $targetNugetExe
-        Set-Alias nuget $targetNugetExe -Scope Global -Verbose
+        [System.Environment]::SetEnvironmentVariable("Path", ($env:Path + ';' + $targetNugetExe), 'User')
         Write-Host "The nuget was downloaded in $targetNugetExe"
+        $nuget =  (Get-Command $targetNugetExe);
+
+        &$nuget install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210
         #Write-Error 'Your need install the nuget cli and add path in Enviroment variable'
     }
 }
@@ -62,9 +65,10 @@ function BuildSqlProject {
         targets               = "/t:rebuild"
     }
     
-    $msbuild = Resolve-MsBuild
-    
-    & $msbuild  $file `
+    $msbuild = &Resolve-MsBuild
+    Write-Host ('Build the file: ' + $file)
+    Write-Host $msbuild
+    &$msbuild $file `
         $msbuildArgs.performanceParameters `
         $msbuildArgs.packageParameters `
         $msbuildArgs.loggingParameters `
@@ -87,9 +91,10 @@ try {
 
     Write-Host ("Searching for: $fileName")
 
-    $files = Get-ChildItem $fileName -Recurse -File -Path $path | % { $_ }
+    $files = Get-ChildItem  -File $fileName -Recurse -Path $path
     if ($files.Length -eq 0) {
-        Throw ("No files found in " + $path )
+        $erro = ("No files found in " + $path );
+        Throw $erro
     }
     else {
         Write-Host ("The project was found")
@@ -97,7 +102,9 @@ try {
 
         foreach ($file in $files) {
             Write-Host "Found file: " $file
+            
             $outDir = New-Item -ItemType Directory -Force -Path $output -Name $file.BaseName | % { $_.FullName }
+            
             BuildSqlProject $file.FullName $outDir;
         }
     }

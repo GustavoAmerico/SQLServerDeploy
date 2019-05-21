@@ -14,7 +14,7 @@ param(
 
 function Resolve-MsBuild {
     Write-Host 'Searching by msbuild'
-    $msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue | %{$_.Path}
+    $msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue | % { $_.Path }
     if ($msb2017) {
         Write-Host "Found MSBuild 2017 (or later)."
         Write-Host $msb2017[0]
@@ -36,9 +36,10 @@ function Resolve-MsBuild {
 function Install-Dependency { 
     
     if (Get-Command nuget.exe -ErrorAction SilentlyContinue) {
-    Write-Host 'Installing SQL Server Data Tools from nuget'
-    &nuget.exe install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210
-     }else{     
+        Write-Host 'Installing SQL Server Data Tools from nuget'
+        &nuget.exe install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210
+    }
+    else {     
         $sourceNugetExe = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
         Write-Host "The nuget command line not found. We will download from $sourceNugetExe"        
         $targetNugetExe = ($MyInvocation.MyCommand.Source + "\nuget.exe")
@@ -76,19 +77,19 @@ function BuildSqlProject {
 try {
 
     $fileName = ($filePattern).Trim(); 
-    if([System.String]::IsNullOrEmpty($fileName)){
-        $fileName='*.sqlproj';   
+    if ([System.String]::IsNullOrEmpty($fileName)) {
+        $fileName = '*.sqlproj';   
     }
-    if([System.String]::IsNullOrEmpty($path)){
-            $path=$(pwd);   
-        }
+    if ([System.String]::IsNullOrEmpty($path)) {
+        $path = $(pwd);   
+    }
         
 
     Write-Host ("Searching for: $fileName")
 
-    $files = Get-ChildItem $fileName -Recurse -File -Path $path | % {$_}
+    $files = Get-ChildItem $fileName -Recurse -File -Path $path | % { $_ }
     if ($files.Length -eq 0) {
-        Throw "No files found"
+        Throw ("No files found in " + $path )
     }
     else {
         Write-Host ("The project was found")
@@ -96,7 +97,7 @@ try {
 
         foreach ($file in $files) {
             Write-Host "Found file: " $file
-            $outDir = New-Item -ItemType Directory -Force -Path $output -Name $file.BaseName | % {$_.FullName}
+            $outDir = New-Item -ItemType Directory -Force -Path $output -Name $file.BaseName | % { $_.FullName }
             BuildSqlProject $file.FullName $outDir;
         }
     }

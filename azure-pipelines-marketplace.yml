@@ -5,6 +5,7 @@ trigger:
   branches:
     include:
       - master
+      - release
   paths:
     include:
       - "src/AzureDevOps/SQLServerDeploy"
@@ -12,6 +13,14 @@ trigger:
 
 name: 2.0.0.$(Build.BuildId)
 steps:
+
+  - task: PowerShell@2
+    displayName: 'Build Sql Server Project'
+    inputs:
+      targetType: filePath
+      filePath: src/AzureDevOps/SQLServerDeploy/Tasks/MSSQLPack
+      arguments: '--filePattern=*.dacpac --path=src/AzureDevOps/Tests/MsDeployTest/ --output=$(Build.ArtifactStagingDirectory) '
+      
   - task: CmdLine@1
     displayName: "NPM Install tfx-cli"
     inputs:
@@ -45,6 +54,7 @@ steps:
 
   - task: CmdLine@1
     displayName: "Run tfx"
+    condition: eq(variables['Build.SourceBranchName'], 'master')
     inputs:
       filename: tfx
       arguments: "extension create --manifest-globs vss-extension.json --output-path $(Build.ArtifactStagingDirectory)"
@@ -52,3 +62,4 @@ steps:
 
   - task: PublishBuildArtifacts@1
     displayName: "Publish Artifact: drop"
+    condition: eq(variables['Build.SourceBranchName'], 'master')

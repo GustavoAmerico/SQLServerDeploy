@@ -11,7 +11,7 @@ trigger:
       - "src/AzureDevOps/SQLServerDeploy"
       - "azure-pipelines-marketplace.yml"
 
-name: $[format('{0}', variables['version']) ]
+name: $[format('2.0.1.{0}', variables['Build.BuildId'])]
 steps:
 
   - task: PowerShell@2
@@ -19,7 +19,7 @@ steps:
     inputs:
       targetType: filePath
       filePath: src/AzureDevOps/SQLServerDeploy/Tasks/MSSQLPack/command.ps1
-      arguments: '--filePattern=*.sqlproj --path="$(Build.SourcesDirectory)\src\AzureDevOps\Tests\MsDeployTest\" --output=$(Build.ArtifactStagingDirectory) '
+      arguments: '"*.sqlproj" "$(Build.SourcesDirectory)\src\AzureDevOps\Tests\MsDeployTest\" "$(Build.ArtifactStagingDirectory)"" '
       
   - task: CmdLine@1
     displayName: "NPM Install tfx-cli"

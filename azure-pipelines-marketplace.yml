@@ -19,7 +19,7 @@ steps:
     inputs:
       targetType: filePath
       filePath: src/AzureDevOps/SQLServerDeploy/Tasks/MSSQLPack/command.ps1
-      arguments: '"*.sqlproj" "$(Build.SourcesDirectory)\src\AzureDevOps\Tests\MsDeployTest\" "$(Build.ArtifactStagingDirectory)"" '
+      arguments: ' "*.sqlproj" "$(Build.SourcesDirectory)\src\AzureDevOps\Tests\MsDeployTest\" "$(Build.ArtifactStagingDirectory)" '
       
   - task: CmdLine@1
     displayName: "NPM Install tfx-cli"

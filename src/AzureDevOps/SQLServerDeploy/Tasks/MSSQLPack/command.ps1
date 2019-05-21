@@ -29,8 +29,7 @@ function Resolve-MsBuild {
 
     Write-Host "Found MSBuild 2015."
     Write-Host $msBuild2015
-
-    return (Get-Command $msBuild2015[0] -ErrorAction SilentlyContinue)
+    return (Get-Command $msBuild2015 -ErrorAction SilentlyContinue)
 }
 
 function Install-Dependency { 
@@ -46,7 +45,7 @@ function Install-Dependency {
         Invoke-WebRequest $sourceNugetExe -OutFile $targetNugetExe
         [System.Environment]::SetEnvironmentVariable("Path", ($env:Path + ';' + $targetNugetExe), 'User')
         Write-Host "The nuget was downloaded in $targetNugetExe"
-        $nuget =  (Get-Command $targetNugetExe);
+        $nuget = (Get-Command $targetNugetExe);
 
         &$nuget install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210
         #Write-Error 'Your need install the nuget cli and add path in Enviroment variable'
@@ -67,7 +66,7 @@ function BuildSqlProject {
     
     $msbuild = &Resolve-MsBuild
     Write-Host ('Build the file: ' + $file)
-    Write-Host $msbuild
+    Write-Host ('Found MSBUILD: ' + $msbuild )
     &$msbuild $file `
         $msbuildArgs.performanceParameters `
         $msbuildArgs.packageParameters `

@@ -14,7 +14,7 @@ param(
 
 function Resolve-MsBuild {
     Write-Host 'Searching by msbuild'
-    $msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue | % { $_.Path }
+    $msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue | % { $_.FullName }
     if ($msb2017) {
         Write-Host "Found MSBuild 2017 (or later)."
         Write-Host $msb2017
@@ -46,7 +46,7 @@ function Install-Dependency {
         [System.Environment]::SetEnvironmentVariable("Path", ($env:Path + ';' + $targetNugetExe), 'User')
         Write-Host "The nuget was downloaded in $targetNugetExe"
         $nuget = (Get-Command $targetNugetExe);
-
+        Write-Host 'Installing SQL Server Data Tools from nuget after downloading'
         &$nuget install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210
         #Write-Error 'Your need install the nuget cli and add path in Enviroment variable'
     }

@@ -1,18 +1,23 @@
 variables:
   version: $[format('2.0.1.{0}', variables['Build.BuildId'])]
+  sqlserver_password: Paw1@3$
 
 trigger:
   branches:
     include:
       - master
+      - dev
       - release
   paths:
     include:
       - "src/AzureDevOps/SQLServerDeploy"
       - "azure-pipelines-marketplace.yml"
 
-name: $[format('2.0.1.{0}', variables['Build.BuildId'])]
+name: $[variables['version']]
 steps:
+ 
+  - powershell: 'choco install visualstudio2017buildtools'
+    displayName: 'visualstudio2017buildtools'
 
   - task: PowerShell@2
     displayName: 'Build Sql Server Project'
@@ -20,7 +25,24 @@ steps:
       targetType: filePath
       filePath: src/AzureDevOps/SQLServerDeploy/Tasks/MSSQLPack/command.ps1
       arguments: ' "*.sqlproj" "$(Build.ArtifactStagingDirectory)" "$(Build.SourcesDirectory)\src\Tests\MsDeployTest\" '
-      
+  
+  - task: Docker@1
+    displayName: Start SQL Server
+    inputs:
+      command: Run an image
+      imageName: mcr.microsoft.com/mssql/server:2019-CTP2.2-ubuntu
+      ports: 1433:1433
+      envVars: |
+        ACCEPT_EULA=true
+        SA_PASSWORD=$(sqlserver_password)
+
+  - task: PowerShell@2
+    displayName: 'Publish Sql Server package'
+    inputs:
+      targetType: filePath
+      filePath: src/AzureDevOps/SQLServerDeploy/Tasks/MSSQLDeploy/command.ps1
+      arguments: ' "*.dacpac" "$(Build.SourcesDirectory)\src\Tests\MsDeployTest\" "localhost,1433" sa $(sqlserver_password) TestDb'
+
   - task: CmdLine@1
     displayName: "NPM Install tfx-cli"
     inputs:

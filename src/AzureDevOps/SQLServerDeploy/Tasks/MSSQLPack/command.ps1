@@ -36,7 +36,7 @@ function Install-Dependency {
     
     if (Get-Command nuget.exe -ErrorAction SilentlyContinue) {
         Write-Host 'Installing SQL Server Data Tools from nuget'
-        &nuget.exe install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210
+        &nuget.exe install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210 
     }
     else {     
         $sourceNugetExe = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"

@@ -1,5 +1,5 @@
 variables:
-  version: $[format('2.0.1.{0}', variables['Build.BuildId'])]
+  version: $[join('2.0.1.',variables['Build.BuildId'])]
 
 trigger:
   branches:
@@ -11,7 +11,7 @@ trigger:
       - "src/AzureDevOps/SQLServerDeploy"
       - "azure-pipelines-marketplace.yml"
 
-name: $[format('2.0.1.{0}', variables['Build.BuildId'])]
+name: $[variables['version']]
 steps:
 
   - task: PowerShell@2

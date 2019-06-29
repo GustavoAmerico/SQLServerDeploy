@@ -50,7 +50,7 @@ jobs:
 
 
 - job: Create_Artifact
-  condition: eq($(Build.SourceBranchName), 'master')
+  condition: eq(variables['Build.SourceBranchName'], 'master')
   steps:    
     - task: CmdLine@1
       displayName: "NPM Install tfx-cli"

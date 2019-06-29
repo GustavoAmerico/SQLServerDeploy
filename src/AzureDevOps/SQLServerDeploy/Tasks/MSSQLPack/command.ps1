@@ -54,8 +54,8 @@ function Install-Dependency {
 
 function BuildSqlProject {
     param([String] [Parameter(Mandatory = $True)] $file, [String] [Parameter(Mandatory = $False)] $outDir)
+    Write-Host 'Start BuildSqlProject';
     $nugetPath = ($env:userprofile + '\.nuget\packages\microsoft.data.tools.msbuild\10.0.61804.210\lib\net46');
-
 
     $msbuildArgs = @{ 
         performanceParameters = "/nologo", "/p:WarningLevel=4", "/clp:Summary", "/m:1"
@@ -100,11 +100,10 @@ try {
         Install-Dependency;
 
         foreach ($file in $files) {
-            Write-Host "Found file: " $file
-            
-            $outDir = New-Item -ItemType Directory -Force -Path $output -Name $file.BaseName | % { $_.FullName }
-            
-            BuildSqlProject $file.FullName $outDir;
+            Write-Host "Found file: " $file;            
+            $outDir = New-Item -ItemType Directory -Force -Path $output -Name $file.BaseName | % { $_.FullName };
+            Write-Host ('The system will compile the file ' + $file.FullName);
+            &BuildSqlProject $file.FullName $outDir;
         }
     }
 }

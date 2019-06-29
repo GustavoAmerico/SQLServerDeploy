@@ -18,7 +18,8 @@ trigger:
 
 name: $(major).$(minor).$(Build.BuildId)
 jobs:
-- job: "Teste_Powershell_Script"  
+- job: "Build_SQL_Project" 
+  displayName: Compile an .sqlproj for test script
   variables:
     sqlserver_password: Paw1@3$
   steps:   
@@ -53,6 +54,7 @@ jobs:
 
 
 - job: Create_Artifact
+  displayName: Create the artifact for Marketplace
   condition: eq(variables['Build.SourceBranchName'], 'master')
   steps:    
     - task: CmdLine@1

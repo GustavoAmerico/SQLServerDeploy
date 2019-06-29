@@ -1,5 +1,5 @@
 variables:
-  version: $[format('2.0.1.{0}', $("Build.BuildId"))]
+  version: 2.0.1.variables["Build.BuildId"]
   sqlserver_password: Paw1@3$
 
 trigger:

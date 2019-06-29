@@ -95,9 +95,9 @@ jobs:
         JsonWorkingDir: src/AzureDevOps/SQLServerDeploy/Tasks
         JsonTargetFilters: "*/task.json"
         JsonPatchContent: |
-           = /version/patch => "$(patch)"
-           = /version/major => "$(major)"
-           = /version/minor => "$(minor)"
+           = /version/Patch => "$(patch)"
+           = /version/Major => "$(major)"
+           = /version/Minor => "$(minor)"
         OutputPatchFile: true
         UseJson5: true
         FailIfNoPatchApplied: true

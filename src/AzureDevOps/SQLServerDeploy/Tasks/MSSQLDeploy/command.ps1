@@ -1,40 +1,39 @@
 ﻿[CmdletBinding(DefaultParameterSetName = 'None')]
 param(
 
-    [String] [Parameter(Mandatory = $True)]
+    [String] [Parameter(Mandatory = $True)][string]
     $dacpacPattern,
 
-    [String] [Parameter(Mandatory = $True)]
+    [String] [Parameter(Mandatory = $True)][string]
     $dacpacPath,
-    [String] [Parameter(Mandatory = $True)]
+    [String] [Parameter(Mandatory = $True)][string]
     $server, 
-    [String] [Parameter(Mandatory = $True)]
+    [String] [Parameter(Mandatory = $True)][string]
     $userId,
-    [SecureString] [Parameter(Mandatory = $True)]
+    [String] [Parameter(Mandatory = $True)][string]
     $password,
 
-    [String] [Parameter(Mandatory = $True)]
+    [String] [Parameter(Mandatory = $True)][string]
     $dbName,
-
-    [String] [Parameter(Mandatory = $False)]
+    [bool] [Parameter(Mandatory = $False)][bool]
     $blockOnPossibleDataLoss = $False,
 
-    [String] [Parameter(Mandatory = $False)]
+    [bool] [Parameter(Mandatory = $False)][bool]
     $verifyDeployment = $True,
 
-    [String] [Parameter(Mandatory = $False)]
+    [bool] [Parameter(Mandatory = $False)][bool]
     $compareUsingTargetCollation = $True,
 
-    [String] [Parameter(Mandatory = $False)]
+    [bool] [Parameter(Mandatory = $False)][bool]
     $allowIncompatiblePlatform = $True,
 
-    [Int32][Parameter(Mandatory = $true)]
+    [Int32][Parameter(Mandatory = $true)][Int32]
     $commandTimeout = 7200,
 
-    [String] [Parameter(Mandatory = $False)]
+    [bool] [Parameter(Mandatory = $False)][bool]
     $createNewDatabase = $False,
  
-    [String] [Parameter(Mandatory = $False)]
+    [String] [Parameter(Mandatory = $False)][string]
     $variablesInput = ""
 )
 

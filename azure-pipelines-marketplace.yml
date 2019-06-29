@@ -77,7 +77,7 @@ jobs:
         workingFolder: src/AzureDevOps
   
     - task: geeklearningio.gl-vsts-tasks-file-patch.json-patch-task.JsonPatch@3
-      displayName: "Update Version"
+      displayName: "Update plugin Version"
       inputs:
         SyntaxType: slick
         JsonWorkingDir: src/AzureDevOps/SQLServerDeploy
@@ -87,7 +87,22 @@ jobs:
         UseJson5: true
         FailIfNoPatchApplied: true
         SkipErrors: true
-  
+    
+    - task: geeklearningio.gl-vsts-tasks-file-patch.json-patch-task.JsonPatch@3
+      displayName: "Update task Version"
+      inputs:
+        SyntaxType: slick
+        JsonWorkingDir: src/AzureDevOps/SQLServerDeploy/Tasks
+        JsonTargetFilters: "*/task.json"
+        JsonPatchContent: |
+           = /version/patch => "$(patch)"
+           = /version/major => "$(major)"
+           = /version/minor => "$(minor)"
+        OutputPatchFile: true
+        UseJson5: true
+        FailIfNoPatchApplied: true
+        SkipErrors: true
+
     - task: CmdLine@1
       displayName: "Run tfx"
       condition: eq(variables['Build.SourceBranchName'], 'master')

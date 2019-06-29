@@ -1,5 +1,8 @@
 variables:
-  version: 2.0.1.variables["Build.BuildId"]
+  major: 2
+  minor: 1
+  patch: $(Build.BuildId)
+  version: $(major).$(minor).$(patch) 
   sqlserver_password: Paw1@3$
 
 trigger:
@@ -13,7 +16,7 @@ trigger:
       - "src/AzureDevOps/SQLServerDeploy"
       - "azure-pipelines-marketplace.yml"
 
-name: $[variables['version']]
+name: $(major).$(minor).$(Build.BuildId)
 jobs:
 - job: "Teste_Powershell_Script"  
   variables:

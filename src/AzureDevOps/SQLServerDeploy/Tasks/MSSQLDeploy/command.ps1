@@ -15,23 +15,24 @@ param(
 
     [String] [Parameter(Mandatory = $True)][string]
     $dbName,
-    [bool] [Parameter(Mandatory = $False)][bool]
-    $blockOnPossibleDataLoss = $False,
+    
+    [String] [Parameter(Mandatory = $False)][string]
+    $blockOnPossibleDataLoss = "false",
 
-    [bool] [Parameter(Mandatory = $False)][bool]
-    $verifyDeployment = $True,
+    [String] [Parameter(Mandatory = $False)][string]
+    $verifyDeployment = "true",
 
-    [bool] [Parameter(Mandatory = $False)][bool]
-    $compareUsingTargetCollation = $True,
+    [String] [Parameter(Mandatory = $False)][string]
+    $compareUsingTargetCollation = "true",
 
-    [bool] [Parameter(Mandatory = $False)][bool]
-    $allowIncompatiblePlatform = $True,
+    [String] [Parameter(Mandatory = $False)][string]
+    $allowIncompatiblePlatform = "true",
 
     [Int32][Parameter(Mandatory = $true)][Int32]
     $commandTimeout = 7200,
 
-    [bool] [Parameter(Mandatory = $False)][bool]
-    $createNewDatabase = $False,
+    [String] [Parameter(Mandatory = $False)][string]
+    $createNewDatabase = "false",
  
     [String] [Parameter(Mandatory = $False)][string]
     $variablesInput = ""

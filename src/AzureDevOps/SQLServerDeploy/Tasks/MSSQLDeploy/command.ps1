@@ -45,29 +45,7 @@ foreach ($VariableKey in $Variables.Keys) {
     Write-Host $Variables[$VariableKey];
 }
   
- 
-$dacpac = Install-Dotnet-Dacpac
-
-if (!(Test-Path $dacpacPath)) {
-    Write-Error "The path $dacpacPath not exists"
-    return;
-}  
-
-$currentPath = Get-Location
-Set-Location $dacpacPath
-
-Write-Host 'Start publish database'
-
-&$dacpac publish --DacPath=$dacpacPath --server=$server --namePattern=$dacpacPattern  --databaseNames=$dbName --blockOnPossibleDataLoss=$blockOnPossibleDataLoss --verifyDeployment=$verifyDeployment --compareUsingTargetCollation=$compareUsingTargetCollation --allowIncompatiblePlatform=$allowIncompatiblePlatform --commandTimeout=$commandTimeout --createNewDatabase=$createNewDatabase
-
-Set-Location $currentPath  
- 
- 
-
-
-
-
-###########################################################################
+ ###########################################################################
 # INSTALL .NET CORE CLI
 ###########################################################################
  
@@ -134,3 +112,25 @@ function Install-DotNet-Dacpac {
      }
      return Get-Command dotnet-dacpac.exe;
  }
+$dacpac = Install-Dotnet-Dacpac
+
+if (!(Test-Path $dacpacPath)) {
+    Write-Error "The path $dacpacPath not exists"
+    return;
+}  
+
+$currentPath = Get-Location
+Set-Location $dacpacPath
+
+Write-Host 'Start publish database'
+
+&$dacpac publish --DacPath=$dacpacPath --server=$server --namePattern=$dacpacPattern  --databaseNames=$dbName --blockOnPossibleDataLoss=$blockOnPossibleDataLoss --verifyDeployment=$verifyDeployment --compareUsingTargetCollation=$compareUsingTargetCollation --allowIncompatiblePlatform=$allowIncompatiblePlatform --commandTimeout=$commandTimeout --createNewDatabase=$createNewDatabase
+
+Set-Location $currentPath  
+ 
+ 
+
+
+
+
+

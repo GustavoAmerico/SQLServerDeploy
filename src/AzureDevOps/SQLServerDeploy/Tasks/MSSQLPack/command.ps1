@@ -14,7 +14,7 @@ param(
 
 function Resolve-MsBuild {
     Write-Host 'Searching by msbuild'
-    $msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue | % { $_.FullName }
+    $msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue | % { $_.Path }
     if ($msb2017) {
         Write-Host "Found MSBuild 2017 (or later)."
         Write-Host $msb2017

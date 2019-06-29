@@ -45,7 +45,7 @@ foreach ($VariableKey in $Variables.Keys) {
     Write-Host $Variables[$VariableKey];
 }
   
- ###########################################################################
+###########################################################################
 # INSTALL .NET CORE CLI
 ###########################################################################
  
@@ -101,17 +101,19 @@ function global:InstallDotNetCore {
 }
 
 function Install-DotNet-Dacpac {
-    $dotnet= global:InstallDotNetCore
-     if (Get-Command dotnet-dacpac.exe -ErrorAction SilentlyContinue) {
-         Write-Host 'Found dotnet-dacpac.exe'
-     }
-     else {
+    $dotnet = global:InstallDotNetCore
+    if (Get-Command dotnet-dacpac.exe -ErrorAction SilentlyContinue) {
+        Write-Host 'Found dotnet-dacpac.exe'
+    }
+    else {
          
-         Write-Host 'Installing the dotnet tool feature for deploy .dacpac';
-        &$dotnet tool install --global Dacpac.Tool 
-     }
-     return Get-Command dotnet-dacpac.exe;
- }
+        Write-Host 'Installing the dotnet tool feature for deploy .dacpac';
+        &{ 
+            &$dotnet tool install --global Dacpac.Tool
+        } -ErrorAction SilentlyContinue
+    }
+    return Get-Command dotnet-dacpac.exe;
+}
 $dacpac = Install-Dotnet-Dacpac
 
 if (!(Test-Path $dacpacPath)) {

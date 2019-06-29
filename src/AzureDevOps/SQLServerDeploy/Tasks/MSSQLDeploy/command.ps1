@@ -1,4 +1,71 @@
-﻿
+﻿[CmdletBinding(DefaultParameterSetName = 'None')]
+param(
+
+    [String] [Parameter(Mandatory = $True)]
+    $dacpacPattern,
+
+    [String] [Parameter(Mandatory = $True)]
+    $dacpacPath,
+    [String] [Parameter(Mandatory = $True)]
+    $server, 
+    [String] [Parameter(Mandatory = $True)]
+    $userId,
+    [SecureString] [Parameter(Mandatory = $True)]
+    $password,
+
+    [String] [Parameter(Mandatory = $True)]
+    $dbName,
+
+    [String] [Parameter(Mandatory = $False)]
+    $blockOnPossibleDataLoss = $False,
+
+    [String] [Parameter(Mandatory = $False)]
+    $verifyDeployment = $True,
+
+    [String] [Parameter(Mandatory = $False)]
+    $compareUsingTargetCollation = $True,
+
+    [String] [Parameter(Mandatory = $False)]
+    $allowIncompatiblePlatform = $True,
+
+    [Int32][Parameter(Mandatory = $true)]
+    $commandTimeout = 7200,
+
+    [String] [Parameter(Mandatory = $False)]
+    $createNewDatabase = $False,
+ 
+    [String] [Parameter(Mandatory = $False)]
+    $variablesInput = ""
+)
+
+Write-Host "Preparing Publishing Variables"
+$Variables = ConvertFrom-StringData -StringData $variablesInput
+foreach ($VariableKey in $Variables.Keys) {
+    [Environment]::SetEnvironmentVariable($VariableKey, $Variables[$VariableKey], "User");
+    Write-Host $Variables[$VariableKey];
+}
+  
+ 
+$dacpac = Install-Dotnet-Dacpac
+
+if (!(Test-Path $dacpacPath)) {
+    Write-Error "The path $dacpacPath not exists"
+    return;
+}  
+
+$currentPath = Get-Location
+Set-Location $dacpacPath
+
+Write-Host 'Start publish database'
+
+&$dacpac publish --DacPath=$dacpacPath --server=$server --namePattern=$dacpacPattern  --databaseNames=$dbName --blockOnPossibleDataLoss=$blockOnPossibleDataLoss --verifyDeployment=$verifyDeployment --compareUsingTargetCollation=$compareUsingTargetCollation --allowIncompatiblePlatform=$allowIncompatiblePlatform --commandTimeout=$commandTimeout --createNewDatabase=$createNewDatabase
+
+Set-Location $currentPath  
+ 
+ 
+
+
+
 
 ###########################################################################
 # INSTALL .NET CORE CLI
@@ -67,77 +134,3 @@ function Install-DotNet-Dacpac {
      }
      return Get-Command dotnet-dacpac.exe;
  }
-
-
-function Run-Publish{
-param(
-
-    [String] [Parameter(Mandatory = $True)]
-    $dacpacPattern,
-
-    [String] [Parameter(Mandatory = $True)]
-    $dacpacPath,
-    [String] [Parameter(Mandatory = $True)]
-    $server,
- 
-    [String] [Parameter(Mandatory = $True)]
-    $userId,
-
-    [SecureString] [Parameter(Mandatory = $True)]
-    $password,
-
-    [String] [Parameter(Mandatory = $True)]
-    $dbName,
-
-    [String] [Parameter(Mandatory = $False)]
-    $blockOnPossibleDataLoss = $False,
-
-    [String] [Parameter(Mandatory = $False)]
-    $verifyDeployment = $True,
-
-    [String] [Parameter(Mandatory = $False)]
-    $compareUsingTargetCollation = $True,
-
-    [String] [Parameter(Mandatory = $False)]
-    $allowIncompatiblePlatform = $True,
-
-    [Int32][Parameter(Mandatory = $true)]
-    $commandTimeout = 7200,
-
-    [String] [Parameter(Mandatory = $False)]
-    $createNewDatabase = $False,
-
-    [String] [Parameter(Mandatory = $False)]
-    $sqlVersion = "140",
-
-    [String] [Parameter(Mandatory = $False)]
-    $variablesInput = ""
-)
-
-Write-Host "Preparing Publishing Variables"
-$Variables = ConvertFrom-StringData -StringData $variablesInput
-foreach ($VariableKey in $Variables.Keys) {
-    [Environment]::SetEnvironmentVariable($VariableKey, $Variables[$VariableKey], "User");
-    Write-Host $Variables[$VariableKey];
-}
-  
- 
-$dacpac = Install-Dotnet-Dacpac
-
-if (!(Test-Path $dacpacPath)) {
-    Write-Error "The path $dacpacPath not exists"
-    return;
-}  
-
-$currentPath = Get-Location
-Set-Location $dacpacPath
-
-Write-Host 'Start publish database'
-
-&$dacpac publish --DacPath=$dacpacPath --server=$server --namePattern=$dacpacPattern  --databaseNames=$dbName --blockOnPossibleDataLoss=$blockOnPossibleDataLoss --verifyDeployment=$verifyDeployment --compareUsingTargetCollation=$compareUsingTargetCollation --allowIncompatiblePlatform=$allowIncompatiblePlatform --commandTimeout=$commandTimeout --createNewDatabase=$createNewDatabase
-
-Set-Location $currentPath  
-
-}
-
-&Run-Publish

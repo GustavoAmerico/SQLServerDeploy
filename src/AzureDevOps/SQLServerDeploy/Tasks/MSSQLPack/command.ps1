@@ -14,7 +14,10 @@ param(
 
 function Resolve-MsBuild {
     Write-Host 'Searching by msbuild'
-    $msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue | % { $_.FullName }
+    $msb2017 = Resolve-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\*\*\MSBuild\*\bin\msbuild.exe" -ErrorAction SilentlyContinue  `
+        | % { $_.Path } `
+        |  Select-Object -First 1 ;
+
     if ($msb2017) {
         Write-Host "Found MSBuild 2017 (or later)."
         Write-Host $msb2017
@@ -36,7 +39,7 @@ function Install-Dependency {
     
     if (Get-Command nuget.exe -ErrorAction SilentlyContinue) {
         Write-Host 'Installing SQL Server Data Tools from nuget'
-        &nuget.exe install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210
+        &nuget.exe install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210 
     }
     else {     
         $sourceNugetExe = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
@@ -54,8 +57,8 @@ function Install-Dependency {
 
 function BuildSqlProject {
     param([String] [Parameter(Mandatory = $True)] $file, [String] [Parameter(Mandatory = $False)] $outDir)
+    Write-Host 'Start BuildSqlProject';
     $nugetPath = ($env:userprofile + '\.nuget\packages\microsoft.data.tools.msbuild\10.0.61804.210\lib\net46');
-
 
     $msbuildArgs = @{ 
         performanceParameters = "/nologo", "/p:WarningLevel=4", "/clp:Summary", "/m:1"
@@ -100,11 +103,10 @@ try {
         Install-Dependency;
 
         foreach ($file in $files) {
-            Write-Host "Found file: " $file
-            
-            $outDir = New-Item -ItemType Directory -Force -Path $output -Name $file.BaseName | % { $_.FullName }
-            
-            BuildSqlProject $file.FullName $outDir;
+            Write-Host "Found file: " $file;            
+            $outDir = New-Item -ItemType Directory -Force -Path $output -Name $file.BaseName | % { $_.FullName };
+            Write-Host ('The system will compile the file ' + $file.FullName);
+            &BuildSqlProject $file.FullName $outDir;
         }
     }
 }

@@ -1,65 +1,101 @@
 variables:
-  version: $[join('2.0.1.',variables['Build.BuildId'])]
+  major: 2
+  minor: 1
+  patch: $(Build.BuildId)
+  version: $(major).$(minor).$(patch) 
+  sqlserver_password: Paw1@3$
 
 trigger:
   branches:
     include:
       - master
+      - dev
       - release
   paths:
     include:
       - "src/AzureDevOps/SQLServerDeploy"
       - "azure-pipelines-marketplace.yml"
 
-name: $[variables['version']]
-steps:
+name: $(major).$(minor).$(Build.BuildId)
+jobs:
+- job: "Build_SQL_Project" 
+  displayName: Compile an .sqlproj for test script
+  variables:
+    sqlserver_password: Paw1@3$
+  steps:   
+    - powershell: 'choco install visualstudio2017buildtools'
+      displayName: 'visualstudio2017buildtools'
+  
+    - task: PowerShell@2
+      displayName: 'Build Sql Server Project'
+      inputs:
+        targetType: filePath
+        filePath: src/AzureDevOps/SQLServerDeploy/Tasks/MSSQLPack/command.ps1
+        arguments: ' "*.sqlproj" "$(Build.ArtifactStagingDirectory)" "$(Build.SourcesDirectory)\src\Tests\MsDeployTest\" '
+    #Essa task está desabilitado até eu terminar a configuração do SQL Server
+    - task: Docker@1
+      enabled: false 
+      displayName: Start SQL Server
+      inputs:
+        command: Run an image
+        imageName: mssql-server-windows-express:latest
+        ports: 1433:1433
+        envVars: |
+          ACCEPT_EULA=true
+          SA_PASSWORD=$(sqlserver_password)
+  #Essa task está desabilitado até eu terminar a configuração do SQL Server
+    - task: PowerShell@2
+      displayName: 'Publish Sql Server package'
+      enabled: false
+      inputs:
+        targetType: filePath
+        filePath: src/AzureDevOps/SQLServerDeploy/Tasks/MSSQLDeploy/command.ps1
+        arguments: ' "*.dacpac" "$(Build.SourcesDirectory)\src\Tests\MsDeployTest\" "localhost,1433" sa $(sqlserver_password) TestDb'
 
-  - task: PowerShell@2
-    displayName: 'Build Sql Server Project'
-    inputs:
-      targetType: filePath
-      filePath: src/AzureDevOps/SQLServerDeploy/Tasks/MSSQLPack/command.ps1
-      arguments: ' "*.sqlproj" "$(Build.ArtifactStagingDirectory)" "$(Build.SourcesDirectory)\src\Tests\MsDeployTest\" '
-      
-  - task: CmdLine@1
-    displayName: "NPM Install tfx-cli"
-    inputs:
-      filename: npm
-      arguments: "install tfx-cli -g"
 
-  - task: Npm@1
-    displayName: "npm install"
-    inputs:
-      workingDir: src/AzureDevOps
-      verbose: false
-
-  - task: CmdLine@1
-    displayName: "NPM Install vss-web-extension-sdk"
-    inputs:
-      filename: npm
-      arguments: "install vss-web-extension-sdk --save"
-      workingFolder: src/AzureDevOps
-
-  - task: geeklearningio.gl-vsts-tasks-file-patch.json-patch-task.JsonPatch@3
-    displayName: "Update Version"
-    inputs:
-      SyntaxType: slick
-      JsonWorkingDir: src/AzureDevOps/SQLServerDeploy
-      JsonTargetFilters: "vss-extension.json"
-      JsonPatchContent: '= /version => "$(version)"'
-      OutputPatchFile: true
-      UseJson5: true
-      FailIfNoPatchApplied: true
-      SkipErrors: true
-
-  - task: CmdLine@1
-    displayName: "Run tfx"
-    condition: eq(variables['Build.SourceBranchName'], 'master')
-    inputs:
-      filename: tfx
-      arguments: "extension create --manifest-globs vss-extension.json --output-path $(Build.ArtifactStagingDirectory)"
-      workingFolder: src/AzureDevOps/SQLServerDeploy
-
-  - task: PublishBuildArtifacts@1
-    displayName: "Publish Artifact: drop"
-    condition: eq(variables['Build.SourceBranchName'], 'master')
+- job: Create_Artifact
+  displayName: Create the artifact for Marketplace
+  condition: eq(variables['Build.SourceBranchName'], 'master')
+  steps:    
+    - task: CmdLine@1
+      displayName: "NPM Install tfx-cli"
+      inputs:
+        filename: npm
+        arguments: "install tfx-cli -g"
+  
+    - task: Npm@1
+      displayName: "npm install"
+      inputs:
+        workingDir: src/AzureDevOps
+        verbose: false
+  
+    - task: CmdLine@1
+      displayName: "NPM Install vss-web-extension-sdk"
+      inputs:
+        filename: npm
+        arguments: "install vss-web-extension-sdk --save"
+        workingFolder: src/AzureDevOps
+  
+    - task: geeklearningio.gl-vsts-tasks-file-patch.json-patch-task.JsonPatch@3
+      displayName: "Update Version"
+      inputs:
+        SyntaxType: slick
+        JsonWorkingDir: src/AzureDevOps/SQLServerDeploy
+        JsonTargetFilters: "vss-extension.json"
+        JsonPatchContent: '= /version => "$(version)"'
+        OutputPatchFile: true
+        UseJson5: true
+        FailIfNoPatchApplied: true
+        SkipErrors: true
+  
+    - task: CmdLine@1
+      displayName: "Run tfx"
+      condition: eq(variables['Build.SourceBranchName'], 'master')
+      inputs:
+        filename: tfx
+        arguments: "extension create --manifest-globs vss-extension.json --output-path $(Build.ArtifactStagingDirectory)"
+        workingFolder: src/AzureDevOps/SQLServerDeploy
+  
+    - task: PublishBuildArtifacts@1
+      displayName: "Publish Artifact: drop"
+      condition: eq(variables['Build.SourceBranchName'], 'master')

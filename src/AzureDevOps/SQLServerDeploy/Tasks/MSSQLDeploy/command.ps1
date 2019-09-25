@@ -102,8 +102,9 @@ function global:InstallDotNetCore {
 
 function Install-DotNet-Dacpac {
     $dotnet = global:InstallDotNetCore
-    if (Get-Command dotnet-dacpac.exe -ErrorAction SilentlyContinue) {
-        Write-Host 'Found dotnet-dacpac.exe'
+    if ($dot = Get-Command dotnet-dacpac.exe -ErrorAction SilentlyContinue) {
+        Write-Host 'Found dotnet-dacpac.exe';
+         return $dot;
     }
     else {
          
@@ -125,9 +126,9 @@ $currentPath = Get-Location
 Set-Location $dacpacPath
 
 Write-Host 'Start publish database'
-
+%{
 &$dacpac publish --DacPath=$dacpacPath --server=$server --namePattern=$dacpacPattern  --databaseNames=$dbName --blockOnPossibleDataLoss=$blockOnPossibleDataLoss --verifyDeployment=$verifyDeployment --compareUsingTargetCollation=$compareUsingTargetCollation --allowIncompatiblePlatform=$allowIncompatiblePlatform --commandTimeout=$commandTimeout --createNewDatabase=$createNewDatabase
-
+}
 Set-Location $currentPath  
  
  

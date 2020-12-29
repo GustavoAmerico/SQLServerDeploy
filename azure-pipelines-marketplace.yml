@@ -1,6 +1,6 @@
 variables:
   major: 2
-  minor: 1
+  minor: 2
   patch: $(Build.BuildId)
   version: $(major).$(minor).$(patch) 
   sqlserver_password: Paw1@3$

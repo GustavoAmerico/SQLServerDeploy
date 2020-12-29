@@ -12,7 +12,7 @@
     "MachineGroup"
   ],
   "visibility": [
-     "Release","Build"
+    "Release", "Build"
   ],
   "version": {
     "Major": 2,
@@ -20,12 +20,11 @@
     "Patch": 0
   },
   "demands": [
-    "powershell"    
+    "powershell"
   ],
   "author": "Gustavo Américo",
   "minimumAgentVersion": "1.89.0",
-  "inputs": [
-    {
+  "inputs": [{
       "name": "dacpacPattern",
       "type": "string",
       "label": "File name pattern",
@@ -48,7 +47,7 @@
       "defaultValue": "",
       "required": true,
       "helpMarkDown": "The server domain name or IP and port ([database_domain_name or IP],[port]) <192.168.0.3,1433>"
-      
+
     },
     {
       "name": "userId",
@@ -57,14 +56,14 @@
       "defaultValue": "sa",
       "required": true,
       "helpMarkDown": "The sql server user with grant access for create/alter schema"
-      },
+    },
     {
       "name": "password",
       "type": "string",
       "label": "SQL User Password",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "" 
+      "helpMarkDown": ""
     },
     {
       "name": "dbName",
@@ -124,7 +123,7 @@
       "defaultValue": "false",
       "required": false,
       "helpMarkDown": "Specifies whether the existing database will be dropped and a new database created before proceeding with the actual deployment actions. Acquires single-user mode before dropping the existing database.(Not Recomend for production)"
-    }, 
+    },
     {
       "name": "variablesInput",
       "type": "multiLine",
@@ -135,7 +134,7 @@
     }
   ],
   "execution": {
-    "PowerShell": {
+    "PowerShellExe": {
       "target": "$(currentDirectory)\\command.ps1",
       "workingDirectory": "$(System.DefaultWorkingDirectory)",
       "argumentFormat": ""

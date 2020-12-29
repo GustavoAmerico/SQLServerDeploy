@@ -54,7 +54,7 @@ function global:InstallDotNetCore {
         # Version
         [Parameter(Mandatory = $False)]
         [System.String]
-        $DotNetVersion = "2.2.100"
+        $DotNetVersion = "5.0.101"
     ) 
 
     Function Remove-PathVariable([string]$VariableToRemove) {
@@ -110,7 +110,7 @@ function Install-DotNet-Dacpac {
          
         Write-Host 'Installing the dotnet tool feature for deploy .dacpac';
         &{ 
-            &$dotnet tool install --global Dacpac.Tool
+            &$dotnet tool update --global Dacpac.Tool
         } -ErrorAction SilentlyContinue
     }
     return Get-Command dotnet-dacpac.exe;

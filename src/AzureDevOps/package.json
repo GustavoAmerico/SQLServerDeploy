@@ -8,7 +8,7 @@
   },
   "main": "SQLServerDeploy",
   "devDependencies": {
-    "tfx-cli": "^0.4.16"
+    "tfx-cli": "^0.12.0"
   },
   "dependencies": {
     "docusaurus": "^1.6.2",
